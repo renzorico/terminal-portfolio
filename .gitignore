@@ -1,0 +1,27 @@
+# Environment
+.env
+.env.local
+.env.*
+
+# Dependencies
+node_modules/
+__pycache__/
+.venv/
+dist/
+.next/
+
+# Build outputs
+*.min.js
+*.min.css
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private / sensitive uploads
+uploads/
+
+# Secrets / credentials
+*.pem
+*.key
+credentials.json

@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="stylesheet" href="../colors_and_type.css"><style>*{margin:0;box-sizing:border-box}body{background:var(--bg-0);color:var(--fg-0);font-family:var(--font-mono);padding:20px;}</style><style>
+.card{background:var(--bg-2);border:1px solid var(--fg-3);border-radius:2px;overflow:hidden;width:300px;}
+.card-header{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg-3);border-bottom:1px solid var(--fg-3);font-size:11px;color:var(--fg-2);}
+.card-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--fg-3);}
+.card-body{padding:12px;font-size:12px;line-height:1.6;color:var(--fg-1);}
+</style></head><body>
+<div style="display:flex;gap:16px;flex-wrap:wrap;">
+  <div class="card">
+    <div class="card-header"><span class="card-dot"></span><span class="card-dot"></span><span class="card-dot"></span><span style="margin-left:4px;">~/projects/fraud-detection</span></div>
+    <div class="card-body"><span style="color:#00ff41;">&gt;</span> XGBoost model detecting anomalous transactions. <span style="color:var(--fg-2);">F1: 0.94 | AUC: 0.98</span></div>
+  </div>
+  <div class="card" style="border-color:var(--green-dim);box-shadow:0 0 8px rgba(0,214,50,0.1);">
+    <div class="card-header" style="border-color:var(--green-dim);"><span class="card-dot" style="background:var(--green-primary);border-color:var(--green-primary);"></span><span class="card-dot"></span><span class="card-dot"></span><span style="margin-left:4px;color:var(--green-primary);">active</span></div>
+    <div class="card-body"><span style="color:#00ff41;">&gt;</span> Hover / focus state with glow border.</div>
+  </div>
+</div>
+</body></html>

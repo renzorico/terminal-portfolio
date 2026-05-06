@@ -1,0 +1,290 @@
+/* ============================================================
+   Renzo Rico Portfolio Design System — Colors & Typography
+   ============================================================
+   Terminal / bash aesthetic. Museum-as-portfolio metaphor.
+   Dark-first, code-forward, data-science nerd energy.
+   ============================================================ */
+
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ==============================
+     BASE COLOR TOKENS
+     ============================== */
+
+  /* Backgrounds — deep, rich darks */
+  --bg-0:       #0a0a0a;   /* deepest black — page bg */
+  --bg-1:       #111111;   /* primary surface */
+  --bg-2:       #1a1a1a;   /* card / panel bg */
+  --bg-3:       #242424;   /* elevated surface / hover */
+  --bg-4:       #2e2e2e;   /* active / pressed surface */
+
+  /* Foregrounds — terminal-style greens + neutrals */
+  --fg-0:       #e0e0e0;   /* primary text (light gray) */
+  --fg-1:       #a0a0a0;   /* secondary text */
+  --fg-2:       #666666;   /* muted / disabled */
+  --fg-3:       #444444;   /* decorative / dividers */
+
+  /* Terminal Green — primary accent */
+  --green-bright: #00ff41;  /* classic terminal green — sparingly */
+  --green-primary: #00d632; /* primary interactive */
+  --green-muted:   #00a828; /* hover / secondary */
+  --green-dim:     #0a5c1f; /* bg tints, borders */
+  --green-subtle:  #0d2b14; /* faint bg wash */
+
+  /* Amber — secondary accent (warnings, highlights) */
+  --amber-bright: #ffb800;
+  --amber-primary: #e5a500;
+  --amber-muted:   #b38200;
+  --amber-dim:     #5c4300;
+  --amber-subtle:  #2b2000;
+
+  /* Cyan — tertiary (links, data viz) */
+  --cyan-bright:  #00e5ff;
+  --cyan-primary:  #00bcd4;
+  --cyan-muted:    #00838f;
+  --cyan-dim:      #004d56;
+  --cyan-subtle:   #001f24;
+
+  /* Red — errors, destructive */
+  --red-bright:   #ff3d3d;
+  --red-primary:  #e53535;
+  --red-muted:    #a82828;
+  --red-dim:      #5c1616;
+
+  /* Purple — data viz accent */
+  --purple-bright: #c77dff;
+  --purple-primary: #9d4edd;
+  --purple-muted:   #7b2cbf;
+
+  /* ==============================
+     SEMANTIC COLOR TOKENS
+     ============================== */
+  --color-text:         var(--fg-0);
+  --color-text-secondary: var(--fg-1);
+  --color-text-muted:   var(--fg-2);
+  --color-surface:      var(--bg-1);
+  --color-surface-raised: var(--bg-2);
+  --color-border:       var(--fg-3);
+  --color-border-focus: var(--green-primary);
+  --color-accent:       var(--green-primary);
+  --color-accent-hover: var(--green-muted);
+  --color-accent-bg:    var(--green-subtle);
+  --color-highlight:    var(--amber-primary);
+  --color-link:         var(--cyan-primary);
+  --color-link-hover:   var(--cyan-bright);
+  --color-error:        var(--red-primary);
+  --color-success:      var(--green-primary);
+  --color-warning:      var(--amber-primary);
+
+  /* Prompt prefix color */
+  --color-prompt:       var(--green-bright);
+
+  /* ==============================
+     TYPOGRAPHY
+     ============================== */
+
+  /* Font families */
+  --font-mono:    'JetBrains Mono', 'IBM Plex Mono', 'Courier New', monospace;
+  --font-display: 'Space Grotesk', 'JetBrains Mono', sans-serif;
+  --font-body:    'JetBrains Mono', monospace;
+
+  /* Font sizes — modular scale (1.25 ratio) */
+  --text-xs:   0.64rem;   /* 10.24px */
+  --text-sm:   0.8rem;    /* 12.8px */
+  --text-base: 1rem;      /* 16px */
+  --text-md:   1.125rem;  /* 18px */
+  --text-lg:   1.25rem;   /* 20px */
+  --text-xl:   1.563rem;  /* 25px */
+  --text-2xl:  1.953rem;  /* 31.25px */
+  --text-3xl:  2.441rem;  /* 39px */
+  --text-4xl:  3.052rem;  /* 48.8px */
+  --text-5xl:  3.815rem;  /* 61px */
+
+  /* Line heights */
+  --leading-tight:  1.2;
+  --leading-snug:   1.35;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.8;
+
+  /* Letter spacing */
+  --tracking-tight:  -0.02em;
+  --tracking-normal:  0;
+  --tracking-wide:    0.05em;
+  --tracking-mono:    0.02em;
+
+  /* Font weights */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ==============================
+     SPACING
+     ============================== */
+  --space-1:  0.25rem;  /* 4px */
+  --space-2:  0.5rem;   /* 8px */
+  --space-3:  0.75rem;  /* 12px */
+  --space-4:  1rem;     /* 16px */
+  --space-5:  1.25rem;  /* 20px */
+  --space-6:  1.5rem;   /* 24px */
+  --space-8:  2rem;     /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+
+  /* ==============================
+     BORDERS & RADII
+     ============================== */
+  --radius-none: 0;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   6px;
+  --radius-pill:  9999px;
+
+  --border-thin:  1px solid var(--color-border);
+  --border-focus: 1px solid var(--color-border-focus);
+
+  /* ==============================
+     SHADOWS & EFFECTS
+     ============================== */
+  --shadow-none:   none;
+  --shadow-glow-sm:  0 0 4px var(--green-dim);
+  --shadow-glow-md:  0 0 8px var(--green-dim), 0 0 16px rgba(0, 214, 50, 0.1);
+  --shadow-glow-lg:  0 0 16px var(--green-dim), 0 0 32px rgba(0, 214, 50, 0.15);
+  --shadow-inset:    inset 0 1px 2px rgba(0,0,0,0.4);
+
+  /* ==============================
+     TRANSITIONS
+     ============================== */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast:   100ms;
+  --duration-normal: 200ms;
+  --duration-slow:   400ms;
+}
+
+/* ==============================
+   SEMANTIC ELEMENT STYLES
+   ============================== */
+
+/* Heading styles — Space Grotesk for display, monospace feel */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+h3, .h3 {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+}
+
+h4, .h4 {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+}
+
+h5, .h5 {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  color: var(--color-text-secondary);
+}
+
+/* Body / paragraph */
+p, .body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-mono);
+  color: var(--color-text);
+}
+
+/* Code blocks */
+code, .code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-relaxed);
+  letter-spacing: var(--tracking-mono);
+  color: var(--green-bright);
+  background: var(--bg-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--fg-0);
+  background: var(--bg-1);
+  border: var(--border-thin);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  overflow-x: auto;
+}
+
+/* Small / caption */
+small, .caption {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Links */
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-default);
+}
+a:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+}
+
+/* Terminal prompt text */
+.prompt::before {
+  content: '> ';
+  color: var(--color-prompt);
+}
+
+/* Blinking cursor */
+.cursor::after {
+  content: '█';
+  color: var(--color-prompt);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
