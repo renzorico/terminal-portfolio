@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Renzo Rico Portfolio — Design Tokens
+   Terminal / bash aesthetic. Dark-first, code-forward.
+   ============================================================ */
+
+@theme inline {
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'Courier New', monospace;
+  --font-display: 'Space Grotesk', 'JetBrains Mono', sans-serif;
+  --font-body: 'JetBrains Mono', monospace;
+}
+
+:root {
+  /* Backgrounds */
+  --bg-0: #0a0a0a;
+  --bg-1: #111111;
+  --bg-2: #1a1a1a;
+  --bg-3: #242424;
+  --bg-4: #2e2e2e;
+
+  /* Foregrounds */
+  --fg-0: #e0e0e0;
+  --fg-1: #a0a0a0;
+  --fg-2: #666666;
+  --fg-3: #444444;
+
+  /* Terminal Green */
+  --green-bright: #00ff41;
+  --green-primary: #00d632;
+  --green-muted: #00a828;
+  --green-dim: #0a5c1f;
+  --green-subtle: #0d2b14;
+
+  /* Amber */
+  --amber-bright: #ffb800;
+  --amber-primary: #e5a500;
+  --amber-muted: #b38200;
+  --amber-dim: #5c4300;
+  --amber-subtle: #2b2000;
+
+  /* Cyan */
+  --cyan-bright: #00e5ff;
+  --cyan-primary: #00bcd4;
+  --cyan-muted: #00838f;
+  --cyan-dim: #004d56;
+  --cyan-subtle: #001f24;
+
+  /* Red */
+  --red-bright: #ff3d3d;
+  --red-primary: #e53535;
+  --red-muted: #a82828;
+  --red-dim: #5c1616;
+
+  /* Purple */
+  --purple-bright: #c77dff;
+  --purple-primary: #9d4edd;
+  --purple-muted: #7b2cbf;
+
+  /* Semantic */
+  --color-text: var(--fg-0);
+  --color-text-secondary: var(--fg-1);
+  --color-text-muted: var(--fg-2);
+  --color-surface: var(--bg-1);
+  --color-surface-raised: var(--bg-2);
+  --color-border: var(--fg-3);
+  --color-border-focus: var(--green-primary);
+  --color-accent: var(--green-primary);
+  --color-accent-hover: var(--green-muted);
+  --color-accent-bg: var(--green-subtle);
+  --color-link: var(--cyan-primary);
+  --color-link-hover: var(--cyan-bright);
+  --color-error: var(--red-primary);
+  --color-success: var(--green-primary);
+  --color-warning: var(--amber-primary);
+  --color-prompt: var(--green-bright);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Borders & Radii */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* Shadows */
+  --shadow-glow-sm: 0 0 4px var(--green-dim);
+  --shadow-glow-md: 0 0 8px var(--green-dim), 0 0 16px rgba(0, 214, 50, 0.1);
+
+  /* Transitions */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-0);
+  color: var(--fg-0);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Blinking cursor animation
+   ============================================================ */
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ============================================================
+   Scanlines overlay
+   ============================================================ */
+
+.scanlines {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.06) 2px,
+    rgba(0, 0, 0, 0.06) 4px
+  );
+  z-index: 999;
+}

@@ -13,6 +13,9 @@ dist/
 # Build outputs
 *.min.js
 *.min.css
+out/
+build/
+next-env.d.ts
 
 # OS
 .DS_Store
