@@ -1,43 +1,93 @@
 "use client";
 
-import { useState, useRef, type FormEvent } from "react";
+import { useState, useRef, useCallback, type FormEvent, type KeyboardEvent } from "react";
 
-const RESPONSES: Record<string, string[]> = {
-  help: [
-    "  whoami      about renzo",
-    "  ls          list projects",
-    "  skills      tech stack",
-    "  contact     get in touch",
-    "  clear       reset terminal",
-  ],
-  whoami: [
-    "  renzo.rico -- data scientist | python . llms . ml . sql",
-    "  trained as an architect. ended up in data science.",
-    "  london. github.com/renzorico",
-  ],
-  ls: [
-    "  drwxr-xr-x  no-botes-tu-voto/",
-    "  drwxr-xr-x  legalize-co/",
-    "  drwxr-xr-x  ds-radar/",
-    "  drwxr-xr-x  the-london-bible/",
-    "  drwxr-xr-x  bjj-universe/",
-    "  drwxr-xr-x  un-speeches/",
-  ],
-  skills: [
-    "  LANG     python  sql  javascript  typescript  bash",
-    "  ML/AI    tensorflow  scikit-learn  nlp  llms  ai-agents",
-    "  DATA     pandas  web-scraping  data-pipelines  gcp  supabase",
-    "  VIZ      d3.js  three.js  maplibre  streamlit",
-    "  INFRA    docker  git  linux  vercel  rest-apis",
-  ],
-  contact: [
-    "  -> github:   github.com/renzorico",
-    "  -> linkedin: linkedin.com/in/renzorico",
-  ],
+/* ----------------------------------------------------------------
+   Command definitions
+   ---------------------------------------------------------------- */
+
+type CommandResult = {
+  lines: string[];
+  /** Section ID to scroll to after output */
+  navigateTo?: string;
 };
 
+const COMMANDS: Record<string, CommandResult> = {
+  help: {
+    lines: [
+      "  whoami              about renzo",
+      "  ls                  list projects",
+      "  cd projects         go to projects",
+      "  cat about.json      read about",
+      "  skills              tech stack",
+      "  ./contact.sh        contact form",
+      "  clear               reset terminal",
+    ],
+  },
+  whoami: {
+    lines: [
+      "  renzo.rico -- data scientist | python . llms . ml . sql",
+      "  trained as an architect. ended up in data science.",
+      "  london. github.com/renzorico",
+    ],
+    navigateTo: "about",
+  },
+  ls: {
+    lines: [
+      "  drwxr-xr-x  no-botes-tu-voto/",
+      "  drwxr-xr-x  legalize-co/",
+      "  drwxr-xr-x  ds-radar/",
+      "  drwxr-xr-x  the-london-bible/",
+      "  drwxr-xr-x  bjj-universe/",
+      "  drwxr-xr-x  un-speeches/",
+    ],
+    navigateTo: "exhibits",
+  },
+  "cd projects": {
+    lines: ["  navigating to ~/projects/ ..."],
+    navigateTo: "exhibits",
+  },
+  "cd projects/": {
+    lines: ["  navigating to ~/projects/ ..."],
+    navigateTo: "exhibits",
+  },
+  "cat about.json": {
+    lines: ["  opening about.json ..."],
+    navigateTo: "about",
+  },
+  skills: {
+    lines: [
+      "  LANG     python  sql  javascript  typescript  bash",
+      "  ML/AI    tensorflow  scikit-learn  nlp  llms  ai-agents",
+      "  DATA     pandas  web-scraping  data-pipelines  gcp  supabase",
+      "  VIZ      d3.js  three.js  maplibre  streamlit",
+      "  INFRA    docker  git  linux  vercel  rest-apis",
+    ],
+    navigateTo: "skills",
+  },
+  "./contact.sh": {
+    lines: ["  launching contact form ..."],
+    navigateTo: "contact",
+  },
+  contact: {
+    lines: [
+      "  -> github:   github.com/renzorico",
+      "  -> linkedin: linkedin.com/in/renzorico",
+      "  -> email:    renzorico10@gmail.com",
+      "",
+      "  or run ./contact.sh to use the form",
+    ],
+  },
+};
+
+const COMMAND_NAMES = Object.keys(COMMANDS);
+
+/* ----------------------------------------------------------------
+   Types
+   ---------------------------------------------------------------- */
+
 type HistoryEntry = {
-  type: "input" | "output" | "error";
+  type: "input" | "output" | "error" | "nav";
   text: string;
 };
 
@@ -45,7 +95,11 @@ interface TerminalPromptProps {
   onCommand?: (cmd: string) => void;
 }
 
-function Prompt() {
+/* ----------------------------------------------------------------
+   Prompt prefix
+   ---------------------------------------------------------------- */
+
+function PromptPrefix() {
   return (
     <>
       <span style={{ color: "var(--green-bright)" }}>renzo@local</span>
@@ -56,16 +110,45 @@ function Prompt() {
   );
 }
 
+/* ----------------------------------------------------------------
+   Component
+   ---------------------------------------------------------------- */
+
 export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [input, setInput] = useState("");
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const inputHistory = useRef<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const scrollTerminal = useCallback(() => {
+    setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      }
+    }, 10);
+  }, []);
+
+  const navigateToSection = useCallback((sectionId: string) => {
+    setTimeout(() => {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 400);
+  }, []);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const cmd = input.trim().toLowerCase();
-    const newHistory: HistoryEntry[] = [...history, { type: "input", text: input }];
+    const raw = input.trim();
+    const cmd = raw.toLowerCase();
+
+    if (!cmd) return;
+
+    // Store in input history for up/down arrow
+    inputHistory.current.push(raw);
+    setHistoryIndex(-1);
+
+    const newHistory: HistoryEntry[] = [...history, { type: "input", text: raw }];
 
     if (cmd === "clear") {
       setHistory([]);
@@ -73,9 +156,17 @@ export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
       return;
     }
 
-    if (RESPONSES[cmd]) {
-      RESPONSES[cmd].forEach((line) => newHistory.push({ type: "output", text: line }));
-    } else if (cmd) {
+    const result = COMMANDS[cmd];
+    if (result) {
+      result.lines.forEach((line) => newHistory.push({ type: "output", text: line }));
+      if (result.navigateTo) {
+        newHistory.push({
+          type: "nav",
+          text: `  -> scrolling to ${result.navigateTo}`,
+        });
+        navigateToSection(result.navigateTo);
+      }
+    } else {
       newHistory.push({
         type: "error",
         text: `  bash: ${cmd}: command not found. type 'help' for commands.`,
@@ -85,11 +176,37 @@ export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
     setHistory(newHistory);
     setInput("");
     onCommand?.(cmd);
-    setTimeout(() => {
-      if (containerRef.current) {
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    scrollTerminal();
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const hist = inputHistory.current;
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const newIndex =
+        historyIndex === -1 ? hist.length - 1 : Math.max(0, historyIndex - 1);
+      if (hist[newIndex]) {
+        setHistoryIndex(newIndex);
+        setInput(hist[newIndex]);
       }
-    }, 10);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (historyIndex === -1) return;
+      const newIndex = historyIndex + 1;
+      if (newIndex >= hist.length) {
+        setHistoryIndex(-1);
+        setInput("");
+      } else {
+        setHistoryIndex(newIndex);
+        setInput(hist[newIndex]);
+      }
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      const partial = input.trim().toLowerCase();
+      if (!partial) return;
+      const match = COMMAND_NAMES.find((c) => c.startsWith(partial) && c !== partial);
+      if (match) setInput(match);
+    }
   };
 
   return (
@@ -109,19 +226,26 @@ export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
         cursor: "text",
       }}
     >
-      <div style={{ color: "var(--fg-1)" }}>renzo.rico v2.0.1 -- type &apos;help&apos; for commands.</div>
+      <div style={{ color: "var(--fg-1)" }}>
+        renzo.rico v2.0.1 -- type &apos;help&apos; for commands.
+      </div>
       <div style={{ height: 8 }} />
       {history.map((entry, i) => (
         <div key={i}>
           {entry.type === "input" ? (
             <div className="flex items-center">
-              <Prompt />
+              <PromptPrefix />
               <span style={{ color: "var(--fg-0)" }}>{entry.text}</span>
             </div>
           ) : (
             <div
               style={{
-                color: entry.type === "error" ? "var(--red-primary)" : "var(--fg-1)",
+                color:
+                  entry.type === "error"
+                    ? "var(--red-primary)"
+                    : entry.type === "nav"
+                      ? "var(--cyan-primary)"
+                      : "var(--fg-1)",
               }}
             >
               {entry.text}
@@ -130,11 +254,12 @@ export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
         </div>
       ))}
       <form onSubmit={handleSubmit} className="flex items-center">
-        <Prompt />
+        <PromptPrefix />
         <input
           ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
           spellCheck={false}
           autoComplete="off"
           style={{

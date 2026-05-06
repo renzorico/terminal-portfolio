@@ -1,5 +1,6 @@
 import TerminalHeader from "./components/terminal-header";
 import Hero from "./components/hero";
+import BootSequence from "./components/boot-sequence";
 import { Exhibits, Skills, About, Contact } from "./components/sections";
 
 const sectionStyle: React.CSSProperties = {
@@ -14,7 +15,7 @@ const dividerStyle: React.CSSProperties = {
 
 export default function Home() {
   return (
-    <>
+    <BootSequence>
       <div className="scanlines" />
       <TerminalHeader />
       <main>
@@ -45,6 +46,6 @@ export default function Home() {
       >
         built with {"\u2588\u2591\u2591"} by renzo.rico · 2024 · src available on github
       </footer>
-    </>
+    </BootSequence>
   );
 }
