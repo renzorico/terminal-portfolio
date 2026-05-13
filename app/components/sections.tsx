@@ -977,7 +977,7 @@ const ABOUT_ENTRIES: { label: string; value: string; link?: string }[] = [
   { label: "name", value: "Renzo Rico" },
   { label: "role", value: "Data Scientist" },
   { label: "stack", value: "Python · LLMs · ML · NLP · SQL" },
-  { label: "location", value: "Barcelona" },
+  { label: "location", value: "Barcelona, Europe" },
   { label: "github", value: "github.com/renzorico", link: "https://github.com/renzorico" },
   { label: "linkedin", value: "linkedin.com/in/renzorico", link: "https://linkedin.com/in/renzorico" },
 ];
@@ -1001,90 +1001,134 @@ const ASCII_PORTRAIT = `                  .:::.
     .:-=+#%@@%#*==+*+-::.....-#%#+:
 =+*#%@@@@@@@@%#*=-:--:......:*@@@@@%*=:.`;
 
-const GLITCH_CHARS = ".:=#%@*+-";
-
-function AnimatedAscii() {
-  const [displayed, setDisplayed] = useState(ASCII_PORTRAIT);
-  const frameRef = useRef(0);
+function ParticleAscii() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animRef = useRef(0);
   const startedRef = useRef(false);
-  const ref = useRef<HTMLPreElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
 
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !startedRef.current) {
           startedRef.current = true;
           obs.disconnect();
-          runDecode();
+          startAnimation();
         }
       },
       { threshold: 0.2 }
     );
-    obs.observe(el);
+    obs.observe(wrapper);
 
-    function runDecode() {
-      const chars = ASCII_PORTRAIT.split("");
-      const totalFrames = 30;
-      let frame = 0;
+    function startAnimation() {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-      const tick = () => {
-        frame++;
-        const progress = frame / totalFrames;
+      const dpr = window.devicePixelRatio || 1;
+      // Monospace char dimensions at font-size 9px, line-height 1.15
+      const CHAR_W = 5.42;
+      const CHAR_H = 10.35;
 
-        const result = chars.map((ch, i) => {
-          if (ch === " " || ch === "\n") return ch;
-          // Characters resolve from top-left to bottom-right
-          const charProgress = i / chars.length;
-          if (progress > charProgress + 0.3) return ch;
-          if (progress > charProgress) {
-            // Transitioning — show random glitch char
-            return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
+      const lines = ASCII_PORTRAIT.split("\n");
+      const maxCols = Math.max(...lines.map((l) => l.length));
+      const W = maxCols * CHAR_W;
+      const H = lines.length * CHAR_H;
+
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.width = `${W}px`;
+      canvas.style.height = `${H}px`;
+      ctx.scale(dpr, dpr);
+
+      // Collect target positions from non-space chars
+      interface Particle {
+        x: number; y: number;
+        tx: number; ty: number;
+        vx: number; vy: number;
+        alpha: number;
+        phase: number;
+        phaseSpeed: number;
+        driftR: number;
+        settled: boolean;
+      }
+
+      const particles: Particle[] = [];
+      lines.forEach((line, row) => {
+        for (let col = 0; col < line.length; col++) {
+          if (line[col] !== " ") {
+            particles.push({
+              x: Math.random() * W,
+              y: Math.random() * H,
+              tx: col * CHAR_W + CHAR_W * 0.5,
+              ty: row * CHAR_H + CHAR_H * 0.5,
+              vx: (Math.random() - 0.5) * 2,
+              vy: (Math.random() - 0.5) * 2,
+              alpha: 0,
+              phase: Math.random() * Math.PI * 2,
+              phaseSpeed: 0.012 + Math.random() * 0.018,
+              driftR: 0.4 + Math.random() * 0.8,
+              settled: false,
+            });
           }
-          // Not yet revealed
-          return Math.random() > 0.7
-            ? GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)]
-            : " ";
-        });
-
-        setDisplayed(result.join(""));
-
-        if (frame < totalFrames) {
-          frameRef.current = requestAnimationFrame(tick);
-        } else {
-          setDisplayed(ASCII_PORTRAIT);
         }
+      });
+
+      const GREEN = "0, 166, 40"; // rgb for green-muted
+
+      const draw = () => {
+        ctx.clearRect(0, 0, W, H);
+
+        let allSettled = true;
+
+        for (const p of particles) {
+          const dx = p.tx - p.x;
+          const dy = p.ty - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (!p.settled) {
+            allSettled = false;
+            // Spring toward target
+            p.vx += dx * 0.06;
+            p.vy += dy * 0.06;
+            p.vx *= 0.78;
+            p.vy *= 0.78;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha = Math.min(1, p.alpha + 0.025);
+            if (dist < 1.2) p.settled = true;
+          } else {
+            // Gentle orbit drift
+            p.phase += p.phaseSpeed;
+            p.x = p.tx + Math.cos(p.phase) * p.driftR;
+            p.y = p.ty + Math.sin(p.phase * 1.3) * p.driftR;
+            p.alpha = 0.55 + Math.sin(p.phase * 2) * 0.35;
+          }
+
+          ctx.fillStyle = `rgba(${GREEN}, ${p.alpha})`;
+          ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+        }
+
+        animRef.current = requestAnimationFrame(draw);
       };
 
-      frameRef.current = requestAnimationFrame(tick);
+      draw();
     }
 
     return () => {
-      cancelAnimationFrame(frameRef.current);
+      cancelAnimationFrame(animRef.current);
       obs.disconnect();
     };
   }, []);
 
   return (
-    <pre
-      ref={ref}
-      style={{
-        fontFamily: "var(--font-mono)",
-        fontSize: 9,
-        lineHeight: 1.15,
-        color: "var(--green-dim)",
-        background: "none",
-        border: "none",
-        padding: 0,
-        margin: 0,
-        userSelect: "none",
-        flexShrink: 0,
-      }}
-    >
-      {displayed}
-    </pre>
+    <div ref={wrapperRef} style={{ flexShrink: 0, userSelect: "none" }}>
+      <canvas ref={canvasRef} style={{ display: "block" }} />
+    </div>
   );
 }
 
@@ -1114,7 +1158,7 @@ export function About() {
             className="hero-grid"
           >
             {/* ASCII portrait — animated decode */}
-            <AnimatedAscii />
+            <ParticleAscii />
 
             {/* Info grid */}
             <div

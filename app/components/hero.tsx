@@ -4,6 +4,48 @@ import { useState, useEffect } from "react";
 import TerminalPrompt from "./terminal-prompt";
 
 /* ----------------------------------------------------------------
+   Typing effect for the hero name
+   ---------------------------------------------------------------- */
+
+function TypedHeadline({ text, delay = 600 }: { text: string; delay?: number }) {
+  const [displayed, setDisplayed] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    let i = 0;
+    const startTimeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) {
+          clearInterval(interval);
+          setTimeout(() => setShowCursor(false), 1500);
+        }
+      }, 45);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(startTimeout);
+  }, [text, delay]);
+
+  return (
+    <span>
+      {displayed}
+      {showCursor && (
+        <span
+          style={{
+            color: "var(--green-bright)",
+            animation: "blink 1s step-end infinite",
+            marginLeft: 1,
+          }}
+        >
+          |
+        </span>
+      )}
+    </span>
+  );
+}
+
+/* ----------------------------------------------------------------
    Pipeline log — animated line-by-line reveal
    ---------------------------------------------------------------- */
 
@@ -37,47 +79,46 @@ function PipelineTerminal() {
     return () => clearTimeout(startDelay);
   }, []);
 
+  const isDone = visibleLines >= PIPELINE_LINES.length;
+
   return (
     <div
       style={{
-        background: "var(--bg-1)",
-        border: "1px solid var(--fg-3)",
-        borderRadius: "var(--radius-sm)",
+        background: "var(--bg-0)",
+        border: "1px solid var(--bg-4)",
+        borderRadius: "var(--radius-lg)",
         overflow: "hidden",
         fontFamily: "var(--font-mono)",
         fontSize: 12,
         lineHeight: 1.8,
         minHeight: 280,
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
       }}
     >
-      {/* Title bar */}
+      {/* macOS-style title bar */}
       <div
-        className="flex items-center gap-1.5"
+        className="flex items-center"
         style={{
-          padding: "8px 12px",
-          background: "var(--bg-3)",
-          borderBottom: "1px solid var(--fg-3)",
+          padding: "10px 14px",
+          background: "var(--bg-2)",
+          borderBottom: "1px solid var(--bg-4)",
           fontSize: 11,
           color: "var(--fg-2)",
+          gap: 8,
         }}
       >
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              border: "1px solid var(--fg-3)",
-              background: i === 0 && visibleLines >= PIPELINE_LINES.length ? "var(--green-primary)" : "transparent",
-            }}
-          />
-        ))}
-        <span style={{ marginLeft: 4 }}>~/projects/ds-radar</span>
+        <div className="flex items-center" style={{ gap: 6 }}>
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: isDone ? "#27c93f" : "var(--fg-3)" }} />
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--fg-3)" }} />
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--fg-3)" }} />
+        </div>
+        <span style={{ flex: 1, textAlign: "center", fontSize: 11, color: "var(--fg-2)" }}>
+          renzo@local: ~/projects/ds-radar
+        </span>
       </div>
 
       {/* Log output */}
-      <div style={{ padding: "12px 16px" }}>
+      <div style={{ padding: "14px 18px" }}>
         {PIPELINE_LINES.slice(0, visibleLines).map((line, i) => (
           <div
             key={i}
@@ -92,7 +133,7 @@ function PipelineTerminal() {
             {line.text}
           </div>
         ))}
-        {visibleLines < PIPELINE_LINES.length && (
+        {!isDone && (
           <span
             style={{
               color: "var(--green-bright)",
@@ -113,21 +154,21 @@ function PipelineTerminal() {
 
 export default function Hero() {
   return (
-    <div style={{ minHeight: "80vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: 20 }}>
       {/* Two-column hero */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: 48,
+          gap: 40,
           alignItems: "center",
-          marginBottom: 40,
+          marginBottom: 24,
         }}
         className="hero-grid"
       >
         {/* Left: editorial */}
         <div>
-          <div style={{ marginBottom: 10 }}>
+          <div style={{ marginBottom: 12 }}>
             <span
               style={{
                 fontSize: 11,
@@ -147,10 +188,12 @@ export default function Hero() {
               fontWeight: 700,
               lineHeight: 1.2,
               color: "var(--fg-0)",
+              marginTop: 16,
               marginBottom: 20,
+              minHeight: "2.6em",
             }}
           >
-            I build AI products that turn data into decisions.
+            <TypedHeadline text="Automating until I run out of problems." />
           </h1>
           <p
             style={{
