@@ -4,6 +4,13 @@ import { useState } from "react";
 
 const CATEGORIES = [
   {
+    cat: "ml / ai",
+    color: "var(--purple-primary)",
+    bg: "#1a0d2e",
+    border: "var(--purple-muted)",
+    items: ["llms", "ai-agents", "nlp", "deep-learning", "tensorflow", "scikit-learn", "prompt-engineering"],
+  },
+  {
     cat: "languages",
     color: "var(--green-primary)",
     bg: "var(--green-subtle)",
@@ -11,18 +18,11 @@ const CATEGORIES = [
     items: ["python", "sql", "javascript", "typescript", "bash"],
   },
   {
-    cat: "ml / ai",
-    color: "var(--purple-primary)",
-    bg: "#1a0d2e",
-    border: "var(--purple-muted)",
-    items: ["tensorflow", "scikit-learn", "nlp", "deep-learning", "llms", "ai-agents"],
-  },
-  {
     cat: "data",
     color: "var(--cyan-primary)",
     bg: "var(--cyan-subtle)",
     border: "var(--cyan-dim)",
-    items: ["pandas", "web-scraping", "data-pipelines", "gcp", "supabase"],
+    items: ["pandas", "data-pipelines", "web-scraping", "gcp", "supabase"],
   },
   {
     cat: "visualization",

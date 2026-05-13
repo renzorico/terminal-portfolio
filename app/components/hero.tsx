@@ -43,7 +43,7 @@ export default function Hero() {
             letterSpacing: "0.15em",
           }}
         >
-          data scientist · london
+          data scientist · barcelona
         </span>
       </div>
       <h1
@@ -77,8 +77,8 @@ export default function Hero() {
           maxWidth: 540,
         }}
       >
-        I turn messy data into clear answers and working products.
-        Python, ML, NLP, SQL — from collection to deployment.
+        I build AI-powered products that turn complex data into decisions.
+        Python, ML, LLMs, NLP — from raw data to production.
       </p>
       <p
         style={{
@@ -89,7 +89,7 @@ export default function Hero() {
           maxWidth: 540,
         }}
       >
-        Trained as an architect, now building with data. I care about the full pipeline: scraping, cleaning, modelling, and shipping something people actually use.
+        End-to-end builder: data collection, pipelines, ML models, agentic AI, and deployed applications. I ship things that work, not notebooks that sit.
       </p>
       <TerminalPrompt />
     </div>

@@ -61,7 +61,7 @@ export default function Home() {
             email
           </a>
         </div>
-        <div>renzo.rico · 2024</div>
+        <div>renzo.rico · 2025</div>
       </footer>
     </>
   );

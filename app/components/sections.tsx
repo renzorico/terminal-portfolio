@@ -11,11 +11,19 @@ import AnimateIn from "./animate-in";
 
 const EXHIBITS = [
   {
+    title: "ds-radar",
+    description:
+      "Agentic AI pipeline that scrapes job boards, extracts requirements with LLMs, scores listings against a structured profile, and ranks them. Multiple agents coordinate to automate a multi-step decision process into a single CLI command.",
+    tags: ["python", "ai-agents", "llms", "rest-apis"],
+    metrics: "agentic ai · orchestration · decision automation",
+    repo: "https://github.com/renzorico/ds-radar",
+  },
+  {
     title: "no-botes-tu-voto",
     description:
-      "Built a candidate-matching tool for Colombian elections. Scraped policy positions, structured unstructured text with LLMs, and built a scoring engine that helps voters cut through noise.",
+      "Decision-support tool for Colombian elections. Scraped policy positions, structured unstructured text with LLMs, built a scoring engine that matches voters to candidates based on policy alignment.",
     tags: ["python", "llms", "web-scraping", "prompt-engineering"],
-    metrics: "nlp · data collection · scoring model",
+    metrics: "nlp · scoring model · deployed product",
     url: "https://nobotestuvoto.vercel.app/",
     repo: "https://github.com/renzorico/colombia-matcher",
   },
@@ -38,12 +46,12 @@ const EXHIBITS = [
     repo: "https://github.com/renzorico/the-london-bible",
   },
   {
-    title: "ds-radar",
+    title: "legalize-co",
     description:
-      "Agentic pipeline that scrapes job boards, extracts requirements with LLMs, scores listings against my profile, and ranks them. Automated what used to take hours into a single CLI command.",
-    tags: ["python", "ai-agents", "rest-apis", "cli"],
-    metrics: "automation · prompt engineering · etl",
-    repo: "https://github.com/renzorico/ds-radar",
+      "Open-source data pipeline that parses Colombian legislation from raw PDFs into structured, searchable data. Contributed extraction logic and data quality validation.",
+    tags: ["python", "data-pipelines", "git", "rest-apis"],
+    metrics: "open-source · data engineering · etl",
+    repo: "https://github.com/renzorico/legalize-co",
   },
   {
     title: "bjj-universe",
@@ -53,14 +61,6 @@ const EXHIBITS = [
     metrics: "network analysis · 3d visualization · scraping",
     url: "https://renzorico.github.io/bjj-universe/",
     repo: "https://github.com/renzorico/bjj-universe",
-  },
-  {
-    title: "legalize-co",
-    description:
-      "Open-source data pipeline that parses Colombian legislation from raw PDFs into structured, searchable data. Contributed extraction logic and data quality validation.",
-    tags: ["python", "data-pipelines", "git", "rest-apis"],
-    metrics: "open-source · data engineering · etl",
-    repo: "https://github.com/renzorico/legalize-co",
   },
 ];
 
@@ -110,22 +110,22 @@ const labelStyle: React.CSSProperties = {
 const APPROACH_ITEMS = [
   {
     label: "collect",
-    description: "Web scraping, APIs, public datasets. I go get the data that answers the question.",
+    description: "Web scraping, APIs, enterprise data. I go get the data that answers the question.",
     color: "var(--cyan-primary)",
   },
   {
-    label: "clean & transform",
-    description: "Pipelines that turn raw mess into analysis-ready tables. Pandas, SQL, validation.",
+    label: "transform",
+    description: "Pipelines that turn raw mess into analysis-ready tables. Pandas, SQL, validation at scale.",
     color: "var(--amber-primary)",
   },
   {
-    label: "model & analyze",
-    description: "Statistical analysis, ML, NLP, deep learning. Pick the right tool for the problem.",
+    label: "model",
+    description: "ML, NLP, deep learning, LLMs. Classical models and agentic AI — pick the right tool for the problem.",
     color: "var(--purple-primary)",
   },
   {
     label: "ship",
-    description: "Dashboards, apps, visualizations. Analysis that stays in a notebook helps nobody.",
+    description: "Deployed apps, APIs, decision tools. Analysis that stays in a notebook helps nobody.",
     color: "var(--green-primary)",
   },
 ];
@@ -235,8 +235,8 @@ export function Skills() {
 const ABOUT_ENTRIES: { label: string; value: string; link?: string }[] = [
   { label: "name", value: "Renzo Rico" },
   { label: "role", value: "Data Scientist" },
-  { label: "stack", value: "Python · LLMs · ML · SQL" },
-  { label: "location", value: "London" },
+  { label: "stack", value: "Python · LLMs · ML · NLP · SQL" },
+  { label: "location", value: "Barcelona" },
   { label: "github", value: "github.com/renzorico", link: "https://github.com/renzorico" },
   { label: "linkedin", value: "linkedin.com/in/renzorico", link: "https://linkedin.com/in/renzorico" },
 ];
@@ -301,10 +301,10 @@ export function About() {
             }}
           >
             <p style={{ marginBottom: 12 }}>
-              Trained as an architect. Ended up in data science. Both fields reward the same things: thinking in systems, obsessive attention to detail, and knowing when something isn&apos;t finished yet.
+              Trained as an architect. Ended up building with data. Both fields reward the same thing: thinking in systems, obsessing over detail, and knowing when something isn&apos;t finished yet.
             </p>
             <p style={{ color: "var(--fg-0)" }}>
-              Looking for a team that builds things with a point too.
+              I want to build AI products that help people make better decisions — with a team that ships fast and cares about impact.
             </p>
           </div>
         </AnimateIn>

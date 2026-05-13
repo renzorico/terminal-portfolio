@@ -15,9 +15,24 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "renzo.rico — data scientist",
+  title: "Renzo Rico — Data Scientist",
   description:
-    "Terminal-styled portfolio. Data scientist, ML engineer, visual thinker. Python, LLMs, ML, SQL.",
+    "Data scientist building AI-powered products end to end. Python, LLMs, ML, NLP, SQL — from data collection to deployment.",
+  metadataBase: new URL("https://renzorico.com"),
+  openGraph: {
+    title: "Renzo Rico — Data Scientist",
+    description:
+      "Building AI-powered products end to end. Python, LLMs, ML, NLP, SQL.",
+    url: "https://renzorico.com",
+    siteName: "renzorico.com",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Renzo Rico — Data Scientist",
+    description:
+      "Building AI-powered products end to end. Python, LLMs, ML, NLP, SQL.",
+  },
 };
 
 export default function RootLayout({

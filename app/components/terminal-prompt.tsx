@@ -26,20 +26,20 @@ const COMMANDS: Record<string, CommandResult> = {
   },
   whoami: {
     lines: [
-      "  renzo.rico -- data scientist | python . llms . ml . sql",
-      "  trained as an architect. ended up in data science.",
-      "  london. github.com/renzorico",
+      "  renzo.rico -- data scientist | python . llms . ml . nlp . sql",
+      "  i build ai products that turn data into decisions.",
+      "  barcelona. github.com/renzorico",
     ],
     navigateTo: "about",
   },
   ls: {
     lines: [
-      "  drwxr-xr-x  no-botes-tu-voto/",
-      "  drwxr-xr-x  legalize-co/",
       "  drwxr-xr-x  ds-radar/",
-      "  drwxr-xr-x  the-london-bible/",
-      "  drwxr-xr-x  bjj-universe/",
+      "  drwxr-xr-x  no-botes-tu-voto/",
       "  drwxr-xr-x  un-speeches/",
+      "  drwxr-xr-x  the-london-bible/",
+      "  drwxr-xr-x  legalize-co/",
+      "  drwxr-xr-x  bjj-universe/",
     ],
     navigateTo: "exhibits",
   },
@@ -58,10 +58,10 @@ const COMMANDS: Record<string, CommandResult> = {
   skills: {
     lines: [
       "  LANG     python  sql  javascript  typescript  bash",
-      "  ML/AI    tensorflow  scikit-learn  nlp  llms  ai-agents",
+      "  ML/AI    tensorflow  scikit-learn  nlp  llms  ai-agents  deep-learning",
       "  DATA     pandas  web-scraping  data-pipelines  gcp  supabase",
-      "  VIZ      d3.js  three.js  maplibre  streamlit",
-      "  INFRA    docker  git  linux  vercel  rest-apis",
+      "  VIZ      d3.js  three.js  maplibre  streamlit  matplotlib",
+      "  INFRA    docker  git  linux  vercel  rest-apis  next.js",
     ],
     navigateTo: "skills",
   },
