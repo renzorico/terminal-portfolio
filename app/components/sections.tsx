@@ -82,6 +82,7 @@ const EXHIBITS: Exhibit[] = [
     accentDim: "var(--amber-dim)",
     accentSubtle: "var(--amber-subtle)",
     url: "https://speeches-at-un.streamlit.app/",
+    repo: "https://github.com/renzorico/un-speeches",
   },
   {
     id: "EX-04",
