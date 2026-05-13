@@ -1,16 +1,16 @@
 "use client";
 
 const FACTS = [
-  { key: "role target", value: "Data Scientist · IC · product-facing" },
-  { key: "location", value: "Barcelona · open to remote" },
+  { key: "role target", value: "Data Scientist · product-facing" },
+  { key: "location", value: "Barcelona · remote or relocation in Europe" },
   { key: "available", value: "now", highlight: true },
   { key: "core stack", value: "Python · SQL · LLMs · NLP · TypeScript" },
   { key: "owns", value: "data collection → ML → deployment · no handoffs" },
 ];
 
 const PROOFS = [
-  { text: "142 daily listings → 12 ranked matches in 4.2s", tag: "ds-radar" },
-  { text: "Civic voter quiz for Colombian 2026 election — live", tag: "no-botes-tu-voto" },
+  { text: "Agentic pipeline that scrapes job boards, ranks listings against a candidate profile, and exports daily matches", tag: "ds-radar" },
+  { text: "Voter-alignment quiz for the Colombian 2026 election, live and sourced", tag: "no-botes-tu-voto" },
   { text: "Interactive atlas across 600+ London neighborhoods", tag: "the-london-bible" },
 ];
 

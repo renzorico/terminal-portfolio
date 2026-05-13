@@ -1216,8 +1216,8 @@ export function Lab() {
   return (
     <div>
       <AnimateIn>
-        <div style={sectionLabelStyle}>$ ls lab/</div>
-        <div style={sectionTitleStyle}>Lab & experiments</div>
+        <div style={sectionLabelStyle}>$ ls projects/</div>
+        <div style={sectionTitleStyle}>More projects</div>
       </AnimateIn>
 
       <AnimateIn delay={80}>
@@ -1397,7 +1397,7 @@ export function About() {
       </AnimateIn>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        {/* Info card with ASCII */}
+        {/* ASCII portrait + background */}
         <AnimateIn delay={100}>
           <div
             style={{
@@ -1415,38 +1415,27 @@ export function About() {
           >
             <ParticleAscii />
             <div style={{ fontFamily: "var(--font-mono)", fontSize: 13 }}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "100px 1fr",
-                  gap: "12px 20px",
-                }}
-              >
-                {ABOUT_ENTRIES.map((entry) => (
-                  <div key={entry.label} style={{ display: "contents" }}>
-                    <span style={{ color: "var(--fg-2)", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                      {entry.label}
-                    </span>
-                    {entry.link ? (
-                      <a
-                        href={entry.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: "var(--cyan-primary)", textDecoration: "none" }}
-                      >
-                        {entry.value}
-                      </a>
-                    ) : (
-                      <span style={{ color: "var(--fg-0)" }}>{entry.value}</span>
-                    )}
-                  </div>
-                ))}
+              <div style={{ color: "var(--fg-0)", fontSize: 14, fontWeight: 600, marginBottom: 8, fontFamily: "var(--font-display)" }}>
+                Renzo Rico
+              </div>
+              <div style={{ color: "var(--fg-2)", fontSize: 12, marginBottom: 16, lineHeight: 1.6 }}>
+                Trained as an architect. Ended up here.
+                <br />
+                Originally from Colombia, based in Barcelona.
+              </div>
+              <div style={{ display: "flex", gap: 16, fontSize: 12 }}>
+                <a href="https://github.com/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-2)", textDecoration: "none" }}>
+                  github ↗
+                </a>
+                <a href="https://linkedin.com/in/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--cyan-primary)", textDecoration: "none" }}>
+                  linkedin ↗
+                </a>
               </div>
             </div>
           </div>
         </AnimateIn>
 
-        {/* Positioning statement */}
+        {/* Positioning */}
         <AnimateIn delay={200}>
           <div
             style={{
@@ -1461,13 +1450,13 @@ export function About() {
             }}
           >
             <p style={{ marginBottom: 16 }}>
-              Trained as an architect. Ended up building with data. Both fields reward the same instincts: think in systems, care about the parts nobody sees, and know when something is not finished yet.
+              Both fields reward the same instincts: think in systems, care about the parts nobody sees, and know when something is not finished yet.
             </p>
             <p style={{ marginBottom: 16 }}>
-              I specialize in the full pipeline — collecting data nobody else wanted to touch, building models that answer a specific question, deploying tools that people actually use. Comfortable at every layer: scraping, ETL, ML, LLMs, APIs, UI. Not a generalist. Just someone who refuses to stop at the interesting part.
+              The work I tend to end up doing starts at the messy end. There is a source nobody has cleaned, a format nobody has parsed, a system that does not connect to anything useful yet. I work through that part, and then the part after it. The full chain, from whatever the raw input is to something deployed.
             </p>
             <p style={{ color: "var(--fg-0)", fontWeight: 500 }}>
-              Currently looking for a data science role where the job is to make things, not report them.
+              Looking for a data science role where the job is to build things and ship them.
             </p>
           </div>
         </AnimateIn>

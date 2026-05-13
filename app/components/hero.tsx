@@ -153,8 +153,8 @@ function PipelineTerminal() {
    ---------------------------------------------------------------- */
 
 const PROOF_STATS = [
-  { value: "4", label: "live deployed tools — not notebooks" },
-  { value: "sole builder", label: "on every project: data contracts to production UI" },
+  { value: "4", label: "live deployed tools" },
+  { value: "sole builder", label: "on every project: data to deployed UI" },
   { value: "scraping → ETL → ML → agentic AI → deployed product", label: "" },
 ];
 
