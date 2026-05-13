@@ -15,13 +15,18 @@ type CommandResult = {
 const COMMANDS: Record<string, CommandResult> = {
   help: {
     lines: [
-      "  whoami              about renzo",
-      "  ls                  list projects",
-      "  cd projects         go to projects",
-      "  cat about.json      read about",
-      "  skills              tech stack",
-      "  ./contact.sh        contact form",
-      "  clear               reset terminal",
+      "",
+      "  NAVIGATE                          INFO",
+      "  ─────────────────────────         ─────────────────────────",
+      "  ls              list projects     whoami        about renzo",
+      "  cd projects     go to projects    skills        tech stack",
+      "  ./contact.sh    contact form      cat about     read about",
+      "",
+      "  UTILITY",
+      "  ─────────────────────────",
+      "  clear           reset terminal",
+      "  contact         show links",
+      "",
     ],
   },
   whoami: {
@@ -82,7 +87,7 @@ const COMMANDS: Record<string, CommandResult> = {
 
 const COMMAND_NAMES = Object.keys(COMMANDS);
 
-const QUICK_COMMANDS = ["help", "whoami", "ls", "skills", "contact"];
+const QUICK_COMMANDS = ["whoami", "ls", "skills", "contact"];
 
 /* ----------------------------------------------------------------
    Types
@@ -216,25 +221,46 @@ export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
   return (
     <div>
       <div
+        style={{
+          background: "var(--bg-0)",
+          border: "1px solid var(--bg-4)",
+          borderRadius: "var(--radius-lg)",
+          overflow: "hidden",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
+        }}
+      >
+        {/* Terminal title bar */}
+        <div
+          className="flex items-center"
+          style={{
+            padding: "10px 14px",
+            background: "var(--bg-2)",
+            borderBottom: "1px solid var(--bg-4)",
+            gap: 8,
+          }}
+        >
+          <div className="flex items-center" style={{ gap: 6 }}>
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--fg-3)" }} />
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--fg-3)" }} />
+            <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--fg-3)" }} />
+          </div>
+          <span style={{ flex: 1, textAlign: "center", fontSize: 11, color: "var(--fg-2)", fontFamily: "var(--font-mono)" }}>
+            renzo@local: ~ — try a command or click one below
+          </span>
+        </div>
+      <div
         ref={containerRef}
         onClick={() => inputRef.current?.focus()}
         style={{
-          background: "var(--bg-1)",
-          border: "1px solid var(--fg-3)",
-          borderRadius: "var(--radius-sm)",
-          padding: 16,
+          padding: "14px 18px",
           fontFamily: "var(--font-mono)",
           fontSize: 13,
           lineHeight: 1.8,
-          maxHeight: 340,
+          maxHeight: 300,
           overflowY: "auto",
           cursor: "text",
         }}
       >
-        <div style={{ color: "var(--fg-2)", fontSize: 12 }}>
-          interactive terminal — try a command or click one below
-        </div>
-        <div style={{ height: 8 }} />
         {history.map((entry, i) => (
           <div key={i}>
             {entry.type === "input" ? (
@@ -282,8 +308,9 @@ export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
           />
         </form>
       </div>
-      {/* Quick command chips */}
-      <div className="flex flex-wrap gap-2" style={{ marginTop: 10 }}>
+      </div>
+      {/* Quick command chips + help on the right */}
+      <div className="flex flex-wrap items-center gap-2" style={{ marginTop: 10 }}>
         {QUICK_COMMANDS.map((cmd) => (
           <button
             key={cmd}
@@ -314,6 +341,34 @@ export default function TerminalPrompt({ onCommand }: TerminalPromptProps) {
             $ {cmd}
           </button>
         ))}
+        <span style={{ flex: 1 }} />
+        <button
+          onClick={() => {
+            runCommand("help");
+            inputRef.current?.focus();
+          }}
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11,
+            padding: "4px 10px",
+            background: "transparent",
+            border: "1px solid var(--fg-3)",
+            borderRadius: "var(--radius-sm)",
+            color: "var(--fg-2)",
+            cursor: "pointer",
+            transition: "all 150ms",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "var(--amber-dim)";
+            e.currentTarget.style.color = "var(--amber-primary)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "var(--fg-3)";
+            e.currentTarget.style.color = "var(--fg-2)";
+          }}
+        >
+          ? help
+        </button>
       </div>
     </div>
   );
