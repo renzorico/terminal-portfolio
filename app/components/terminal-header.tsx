@@ -5,9 +5,8 @@ import { useState, useEffect } from "react";
 const NAV_ITEMS = [
   { id: "lobby", label: "home" },
   { id: "about", label: "about" },
-  { id: "exhibits", label: "projects" },
-  { id: "approach", label: "approach" },
-  { id: "skills", label: "skills" },
+  { id: "exhibits", label: "exhibits" },
+  { id: "archive", label: "archive" },
   { id: "contact", label: "contact" },
 ] as const;
 

@@ -1,18 +1,21 @@
 "use client";
 
 import { useState, useEffect, useRef, type FormEvent } from "react";
-import SkillsTable from "./skills-table";
 import AnimateIn from "./animate-in";
 
 /* ----------------------------------------------------------------
-   Data
+   Data — Exhibits (case-study format)
    ---------------------------------------------------------------- */
 
-interface Project {
+interface Exhibit {
+  id: string;
   title: string;
-  description: string;
+  problem: string;
+  input: string;
+  approach: string;
+  challenge: string;
+  result: string;
   tags: string[];
-  metrics: string;
   accent: string;
   accentDim: string;
   accentSubtle: string;
@@ -20,24 +23,38 @@ interface Project {
   repo: string;
 }
 
-const FEATURED_PROJECTS: Project[] = [
+const EXHIBITS: Exhibit[] = [
   {
+    id: "EX-01",
     title: "ds-radar",
-    description:
-      "Agentic AI pipeline that scrapes job boards, extracts requirements with LLMs, scores listings against a structured profile, and ranks them. Multiple agents coordinate to automate a multi-step decision process into a single CLI command.",
+    problem:
+      "Job searching at scale is manual, slow, and biased by first impressions. Reading 142 listings a day to find 12 relevant ones is not a viable workflow.",
+    input: "7 job boards · 142 daily listings · structured candidate profile",
+    approach:
+      "Three agents run sequentially: a scraper collects raw listings, a parser extracts structured requirements via LLMs, a scorer ranks each listing against the candidate profile. Coordinated with a single CLI command.",
+    challenge:
+      "Score drift — the scoring agent produced inconsistent results across runs with identical inputs. Resolved by enforcing a structured JSON output schema and calibrating temperature to near-zero for the scoring step.",
+    result:
+      "12 curated matches per day · 4.2s end-to-end runtime · zero manual review required",
     tags: ["python", "ai-agents", "llms", "rest-apis"],
-    metrics: "agentic ai · orchestration · decision automation",
     accent: "var(--cyan-primary)",
     accentDim: "var(--cyan-dim)",
     accentSubtle: "var(--cyan-subtle)",
     repo: "https://github.com/renzorico/ds-radar",
   },
   {
+    id: "EX-02",
     title: "no-botes-tu-voto",
-    description:
-      "Decision-support tool for Colombian elections. Scraped policy positions, structured unstructured text with LLMs, built a scoring engine that matches voters to candidates based on policy alignment.",
+    problem:
+      "Colombian voters had no reliable tool to compare presidential candidates on policy. Manifestos are long, vague, and written to avoid concrete commitments.",
+    input: "Candidate manifestos · press statements · 12 structured policy dimensions · 6 candidates",
+    approach:
+      "Scraped and normalized policy documents. LLMs classified each candidate's stance on health, economy, security, environment, and 8 other dimensions. A scoring engine matched voter answers to candidate positions across the full policy space.",
+    challenge:
+      "Political language is engineered to be ambiguous. Standard classification returned too many neutral labels. Solved with multi-pass prompting and an explicit uncertainty class that surfaced honest gaps rather than forcing alignment.",
+    result:
+      "Deployed tool · 6 candidates · 12 policy dimensions scored · live through the 2023 Colombian election cycle",
     tags: ["python", "llms", "web-scraping", "prompt-engineering"],
-    metrics: "nlp · scoring model · deployed product",
     accent: "var(--green-primary)",
     accentDim: "var(--green-dim)",
     accentSubtle: "var(--green-subtle)",
@@ -45,11 +62,18 @@ const FEATURED_PROJECTS: Project[] = [
     repo: "https://github.com/renzorico/colombia-matcher",
   },
   {
+    id: "EX-03",
     title: "un-speeches",
-    description:
-      "Applied NLP and deep learning to 50+ years of UN General Assembly speeches. Topic modelling, sentiment analysis, and generative AI to surface patterns in diplomatic language over time.",
+    problem:
+      "The UN General Assembly has 50+ years of diplomatic speech on record. There is no accessible tool to explore how geopolitical language has shifted over time.",
+    input: "8,000+ speeches · 50+ countries · 1970–2024 · raw text transcripts",
+    approach:
+      "Topic modeling (LDA) to surface dominant themes per decade. TensorFlow sentiment analysis to track tone around major geopolitical events. Generative AI synthesis of findings. Streamlit dashboard for interactive exploration.",
+    challenge:
+      "Diplomatic language is intentionally repetitive and ambiguous — general-purpose NLP models performed poorly. Required custom preprocessing, stop-word expansion for UN-specific jargon, and fine-tuned sentiment thresholds calibrated against known events.",
+    result:
+      "Topic evolution mapped across 5 decades · TensorFlow sentiment classifier · deployed Streamlit dashboard",
     tags: ["python", "tensorflow", "nlp", "gcp"],
-    metrics: "deep learning · text analytics · topic modelling",
     accent: "var(--amber-primary)",
     accentDim: "var(--amber-dim)",
     accentSubtle: "var(--amber-subtle)",
@@ -58,30 +82,35 @@ const FEATURED_PROJECTS: Project[] = [
   },
 ];
 
-const COMPACT_PROJECTS: Omit<Project, "accent" | "accentDim" | "accentSubtle">[] = [
+interface ArchiveProject {
+  title: string;
+  description: string;
+  tags: string[];
+  url?: string;
+  repo: string;
+}
+
+const ARCHIVE_PROJECTS: ArchiveProject[] = [
   {
     title: "the-london-bible",
     description:
-      "Geospatial analysis of London neighborhoods with interactive maps for transport, culture, and livability scoring.",
+      "Geospatial analysis of London neighborhoods — transport, culture, and livability scored and mapped interactively.",
     tags: ["typescript", "next.js", "maplibre", "supabase"],
-    metrics: "geospatial · etl · data visualization",
     url: "https://the-london-bible.netlify.app/",
     repo: "https://github.com/renzorico/the-london-bible",
   },
   {
     title: "legalize-co",
     description:
-      "Open-source data pipeline that parses Colombian legislation from raw PDFs into structured, searchable data.",
-    tags: ["python", "data-pipelines", "git", "rest-apis"],
-    metrics: "open-source · data engineering · etl",
+      "Open-source ETL pipeline that parses Colombian legislation from raw PDFs into structured, searchable data.",
+    tags: ["python", "data-pipelines"],
     repo: "https://github.com/renzorico/legalize-co",
   },
   {
     title: "bjj-universe",
     description:
-      "3D force-directed network visualization of the competitive BJJ graph. Athlete connections, rankings, and match history.",
+      "Force-directed network graph of competitive BJJ. Athlete connections, rankings, and match history in 3D.",
     tags: ["javascript", "three.js", "d3.js"],
-    metrics: "network analysis · 3d visualization · scraping",
     url: "https://renzorico.github.io/bjj-universe/",
     repo: "https://github.com/renzorico/bjj-universe",
   },
@@ -107,7 +136,6 @@ const TAG_COLORS: Record<string, [string, string, string]> = {
   maplibre: ["var(--green-primary)", "var(--green-subtle)", "var(--green-dim)"],
   supabase: ["var(--green-primary)", "var(--green-subtle)", "var(--green-dim)"],
   "data-pipelines": ["var(--cyan-primary)", "var(--cyan-subtle)", "var(--cyan-dim)"],
-  git: ["var(--fg-1)", "var(--bg-3)", "var(--fg-3)"],
   "three.js": ["var(--amber-primary)", "var(--amber-subtle)", "var(--amber-dim)"],
   "d3.js": ["var(--amber-primary)", "var(--amber-subtle)", "var(--amber-dim)"],
 };
@@ -182,7 +210,6 @@ const labelStyle: React.CSSProperties = {
    Animated Charts — continuously moving
    ---------------------------------------------------------------- */
 
-/** ds-radar: Particles flowing through pipeline stages */
 function RadarChart() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -227,7 +254,6 @@ function RadarChart() {
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
 
-      // Connection lines
       ctx.strokeStyle = "rgba(68, 68, 68, 0.4)";
       ctx.lineWidth = 1;
       ctx.setLineDash([4, 4]);
@@ -239,7 +265,6 @@ function RadarChart() {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Stage nodes
       stages.forEach((s) => {
         ctx.fillStyle = s.color;
         ctx.globalAlpha = 0.15;
@@ -256,11 +281,8 @@ function RadarChart() {
         ctx.fillText(s.label, s.x, 85);
       });
 
-      // Particles
       particles.forEach((p) => {
-        const s = stages[p.stage];
         const nextS = stages[Math.min(p.stage + 1, stages.length - 1)];
-        const startX = s.x;
         const endX = p.stage < stages.length - 1 ? nextS.x : W + 10;
         p.x += p.speed;
         if (p.x > endX) {
@@ -276,7 +298,6 @@ function RadarChart() {
         ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
         ctx.fill();
 
-        // Trail
         ctx.globalAlpha = p.alpha * 0.2;
         ctx.beginPath();
         ctx.arc(p.x - 4, p.y, 1.5, 0, Math.PI * 2);
@@ -284,7 +305,6 @@ function RadarChart() {
         ctx.globalAlpha = 1;
       });
 
-      // Stats
       ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
       ctx.font = "9px monospace";
       ctx.textAlign = "left";
@@ -300,7 +320,6 @@ function RadarChart() {
   return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
 }
 
-/** no-botes-tu-voto: Oscillating match score bars */
 function VoteChart() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -334,7 +353,6 @@ function VoteChart() {
       const gap = (W - candidates.length * barW) / (candidates.length + 1);
       const maxH = 80;
 
-      // Title
       ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
       ctx.font = "9px monospace";
       ctx.textAlign = "center";
@@ -346,13 +364,11 @@ function VoteChart() {
         const h = (c.base + osc) * maxH;
         const y = 95 - h;
 
-        // Bar shadow
         ctx.fillStyle = c.color;
         ctx.globalAlpha = 0.1;
         ctx.fillRect(x, 95 - maxH, barW, maxH);
         ctx.globalAlpha = 1;
 
-        // Bar
         ctx.fillStyle = c.color;
         ctx.globalAlpha = 0.85;
         const r = 3;
@@ -367,13 +383,11 @@ function VoteChart() {
         ctx.fill();
         ctx.globalAlpha = 1;
 
-        // Score
         ctx.fillStyle = "rgba(224, 224, 224, 0.8)";
         ctx.font = "bold 9px monospace";
         ctx.textAlign = "center";
         ctx.fillText(`${Math.round((c.base + osc) * 100)}%`, x + barW / 2, y - 4);
 
-        // Label
         ctx.fillStyle = "rgba(102, 102, 102, 0.7)";
         ctx.font = "8px monospace";
         ctx.fillText(c.label, x + barW / 2, 106);
@@ -389,7 +403,6 @@ function VoteChart() {
   return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
 }
 
-/** un-speeches: Animated line chart with tracing dot */
 function SpeechesChart() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -426,13 +439,11 @@ function SpeechesChart() {
       ctx.clearRect(0, 0, W, H);
       t += 0.01;
 
-      // Title
       ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
       ctx.font = "9px monospace";
       ctx.textAlign = "center";
       ctx.fillText("topic frequency over time", W / 2, 12);
 
-      // Grid lines
       ctx.strokeStyle = "rgba(68, 68, 68, 0.3)";
       ctx.lineWidth = 0.5;
       for (let i = 0; i < 4; i++) {
@@ -443,7 +454,6 @@ function SpeechesChart() {
         ctx.stroke();
       }
 
-      // Area fill
       const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
       grad.addColorStop(0, "rgba(229, 165, 0, 0.15)");
       grad.addColorStop(1, "rgba(229, 165, 0, 0.01)");
@@ -460,7 +470,6 @@ function SpeechesChart() {
       ctx.closePath();
       ctx.fill();
 
-      // Line
       ctx.strokeStyle = "#e5a500";
       ctx.lineWidth = 2;
       ctx.lineJoin = "round";
@@ -473,7 +482,6 @@ function SpeechesChart() {
       }
       ctx.stroke();
 
-      // Static dots
       points.forEach((p) => {
         ctx.fillStyle = "#0a0a0a";
         ctx.beginPath();
@@ -484,8 +492,7 @@ function SpeechesChart() {
         ctx.stroke();
       });
 
-      // Animated scanning dot
-      const progress = (t % 1);
+      const progress = t % 1;
       const totalLen = points.length - 1;
       const segF = progress * totalLen;
       const seg = Math.floor(segF);
@@ -505,7 +512,6 @@ function SpeechesChart() {
         ctx.globalAlpha = 1;
       }
 
-      // X-axis labels
       ctx.fillStyle = "rgba(102, 102, 102, 0.7)";
       ctx.font = "9px monospace";
       ctx.textAlign = "center";
@@ -523,239 +529,197 @@ function SpeechesChart() {
   return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
 }
 
-const FEATURED_CHARTS = [RadarChart, VoteChart, SpeechesChart];
+const EXHIBIT_CHARTS = [RadarChart, VoteChart, SpeechesChart];
 
 /* ----------------------------------------------------------------
-   Featured Project Card — with colored hover
+   Exhibit Block — case-study format
    ---------------------------------------------------------------- */
 
-function FeaturedCard({ project, chart: Chart, index }: { project: Project; chart: React.ComponentType; index: number }) {
-  const [hovered, setHovered] = useState(false);
-  const primaryLink = project.url ?? project.repo;
-
-  return (
-    <a
-      href={primaryLink}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="featured-card"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 260px",
-        gap: 0,
-        background: "var(--bg-1)",
-        border: `1px solid ${hovered ? project.accentDim : "var(--bg-3)"}`,
-        borderLeft: `3px solid ${hovered ? project.accent : project.accentDim}`,
-        borderRadius: "var(--radius-md)",
-        overflow: "hidden",
-        textDecoration: "none",
-        color: "inherit",
-        cursor: "pointer",
-        transition: "all 250ms cubic-bezier(0.4, 0, 0.2, 1)",
-        boxShadow: hovered
-          ? `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 20px ${project.accentSubtle}`
-          : "var(--shadow-card)",
-        transform: hovered ? "translateY(-2px)" : "translateY(0)",
-      }}
-    >
-      {/* Left: content */}
-      <div style={{ padding: "24px 28px 22px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-          <span
-            style={{
-              fontSize: 10,
-              color: project.accent,
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              fontFamily: "var(--font-mono)",
-            }}
-          >
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span style={{ width: 20, height: 1, background: "var(--fg-3)" }} />
-          <span style={{ fontSize: 10, color: "var(--fg-2)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-            featured
-          </span>
-        </div>
-        <div
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 20,
-            fontWeight: 600,
-            color: "var(--fg-0)",
-            marginBottom: 8,
-          }}
-        >
-          {project.title}
-        </div>
-        <div
-          style={{
-            fontSize: 13,
-            color: "var(--fg-1)",
-            lineHeight: 1.65,
-            fontFamily: "var(--font-display)",
-            marginBottom: 14,
-          }}
-        >
-          {project.description}
-        </div>
-        <div className="flex flex-wrap gap-1.5" style={{ marginBottom: 12 }}>
-          {project.tags.map((tag) => (
-            <TagPill key={tag} tag={tag} />
-          ))}
-        </div>
-        <div className="flex items-center gap-3" style={{ fontSize: 11 }}>
-          {project.url && (
-            <span style={{ color: "var(--green-primary)", display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--green-primary)", display: "inline-block" }} />
-              live
-            </span>
-          )}
-          {project.repo && (
-            <span
-              style={{ color: "var(--fg-2)" }}
-              onClick={(e) => {
-                if (project.url) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.open(project.repo, "_blank", "noopener,noreferrer");
-                }
-              }}
-            >
-              source
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Right: animated chart */}
-      <div
-        style={{
-          padding: "20px 20px",
-          background: "var(--bg-2)",
-          borderLeft: `1px solid ${hovered ? project.accentDim : "var(--bg-3)"}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "border-color 250ms",
-        }}
-      >
-        <Chart />
-      </div>
-    </a>
-  );
-}
-
-/* ----------------------------------------------------------------
-   Compact Project Card — square, equal size
-   ---------------------------------------------------------------- */
-
-function CompactCard({ project }: { project: Omit<Project, "accent" | "accentDim" | "accentSubtle"> }) {
-  const [hovered, setHovered] = useState(false);
-  const primaryLink = project.url ?? project.repo;
-
-  return (
-    <a
-      href={primaryLink}
-      target="_blank"
-      rel="noopener noreferrer"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        background: "var(--bg-1)",
-        border: `1px solid ${hovered ? "var(--fg-3)" : "var(--bg-3)"}`,
-        borderRadius: "var(--radius-md)",
-        padding: "22px 22px 20px",
-        display: "flex",
-        flexDirection: "column",
-        textDecoration: "none",
-        color: "inherit",
-        cursor: "pointer",
-        transition: "all 250ms cubic-bezier(0.4, 0, 0.2, 1)",
-        boxShadow: hovered ? "var(--shadow-card-hover)" : "var(--shadow-card)",
-        transform: hovered ? "translateY(-2px)" : "translateY(0)",
-        height: "100%",
-        minHeight: 200,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-        <span
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 16,
-            fontWeight: 600,
-            color: "var(--fg-0)",
-          }}
-        >
-          {project.title}
-        </span>
-        {project.url && (
-          <span style={{ color: "var(--green-primary)", display: "flex", alignItems: "center", gap: 3, fontSize: 10 }}>
-            <span style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--green-primary)", display: "inline-block" }} />
-            live
-          </span>
-        )}
-      </div>
-      <div style={{ fontSize: 12, color: "var(--fg-1)", lineHeight: 1.6, flex: 1, marginBottom: 12 }}>
-        {project.description}
-      </div>
-      <div className="flex flex-wrap gap-1.5" style={{ marginTop: "auto" }}>
-        {project.tags.map((tag) => (
-          <TagPill key={tag} tag={tag} />
-        ))}
-      </div>
-    </a>
-  );
-}
-
-/* ----------------------------------------------------------------
-   Approach
-   ---------------------------------------------------------------- */
-
-const APPROACH_ITEMS = [
-  {
-    label: "collect",
-    description: "Web scraping, APIs, enterprise data. I go get the data that answers the question.",
-    color: "var(--cyan-primary)",
-    dim: "var(--cyan-dim)",
-    subtle: "var(--cyan-subtle)",
-    tools: ["scraping", "rest-apis", "sql"],
-  },
-  {
-    label: "transform",
-    description: "Pipelines that turn raw mess into analysis-ready tables. Pandas, SQL, validation at scale.",
-    color: "var(--amber-primary)",
-    dim: "var(--amber-dim)",
-    subtle: "var(--amber-subtle)",
-    tools: ["pandas", "pipelines", "etl"],
-  },
-  {
-    label: "model",
-    description: "ML, NLP, deep learning, LLMs. Classical models and agentic AI — pick the right tool for the problem.",
-    color: "var(--purple-primary)",
-    dim: "#1a0d2e",
-    subtle: "#1a0d2e",
-    tools: ["llms", "tensorflow", "scikit-learn"],
-  },
-  {
-    label: "ship",
-    description: "Deployed apps, APIs, decision tools. Analysis that stays in a notebook helps nobody.",
-    color: "var(--green-primary)",
-    dim: "var(--green-dim)",
-    subtle: "var(--green-subtle)",
-    tools: ["vercel", "docker", "next.js"],
-  },
+const CASE_STUDY_ROWS: Array<{ key: keyof Exhibit; label: string }> = [
+  { key: "problem", label: "problem" },
+  { key: "input", label: "input" },
+  { key: "approach", label: "approach" },
+  { key: "challenge", label: "challenge" },
+  { key: "result", label: "result" },
 ];
 
-function PipelineStep({
-  item,
-  index,
+function ExhibitBlock({
+  exhibit,
+  chart: Chart,
 }: {
-  item: typeof APPROACH_ITEMS[number];
-  index: number;
+  exhibit: Exhibit;
+  chart: React.ComponentType;
 }) {
+  return (
+    <div
+      style={{
+        background: "var(--bg-1)",
+        border: `1px solid var(--bg-3)`,
+        borderLeft: `3px solid ${exhibit.accent}`,
+        borderRadius: "var(--radius-md)",
+        overflow: "hidden",
+        boxShadow: "var(--shadow-card)",
+      }}
+    >
+      {/* Header bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 20px",
+          background: "var(--bg-2)",
+          borderBottom: "1px solid var(--bg-3)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 11,
+              color: exhibit.accent,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+            }}
+          >
+            {exhibit.id}
+          </span>
+          <span style={{ color: "var(--bg-4)", fontSize: 14 }}>─</span>
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: 16,
+              fontWeight: 600,
+              color: "var(--fg-0)",
+            }}
+          >
+            {exhibit.title}
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 12, fontFamily: "var(--font-mono)" }}>
+          {exhibit.url && (
+            <a
+              href={exhibit.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: exhibit.accent, textDecoration: "none" }}
+            >
+              live ↗
+            </a>
+          )}
+          <a
+            href={exhibit.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--fg-2)", textDecoration: "none" }}
+          >
+            source ↗
+          </a>
+        </div>
+      </div>
+
+      {/* Content grid: case study + chart */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 240px",
+          alignItems: "stretch",
+        }}
+        className="exhibit-content"
+      >
+        {/* Left: case study rows */}
+        <div style={{ padding: "24px 28px", display: "flex", flexDirection: "column", gap: 14 }}>
+          {CASE_STUDY_ROWS.map((row) => (
+            <div
+              key={row.key}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "76px 1fr",
+                gap: 16,
+                alignItems: "baseline",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 10,
+                  color: exhibit.accent,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  paddingTop: 3,
+                  opacity: 0.8,
+                }}
+              >
+                {row.label}
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  color: row.key === "result" ? "var(--fg-0)" : "var(--fg-1)",
+                  lineHeight: 1.65,
+                  fontWeight: row.key === "result" ? 500 : 400,
+                }}
+              >
+                {exhibit[row.key] as string}
+              </span>
+            </div>
+          ))}
+
+          {/* Tags */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, paddingTop: 4 }}>
+            {exhibit.tags.map((tag) => (
+              <TagPill key={tag} tag={tag} />
+            ))}
+          </div>
+        </div>
+
+        {/* Right: animated chart */}
+        <div
+          style={{
+            padding: "20px",
+            background: "var(--bg-2)",
+            borderLeft: "1px solid var(--bg-3)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          className="exhibit-chart"
+        >
+          <Chart />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------
+   Exhibits — three flagship case studies
+   ---------------------------------------------------------------- */
+
+export function Exhibits() {
+  return (
+    <div>
+      <AnimateIn>
+        <div style={sectionLabelStyle}>$ ls exhibits/</div>
+        <div style={sectionTitleStyle}>Selected work</div>
+      </AnimateIn>
+
+      <div className="flex flex-col" style={{ gap: 20 }}>
+        {EXHIBITS.map((exhibit, i) => (
+          <AnimateIn key={exhibit.id} delay={i * 120}>
+            <ExhibitBlock exhibit={exhibit} chart={EXHIBIT_CHARTS[i]} />
+          </AnimateIn>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------
+   Archive — secondary projects, compact list
+   ---------------------------------------------------------------- */
+
+function ArchiveRow({ project }: { project: ArchiveProject }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -763,214 +727,74 @@ function PipelineStep({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        width: "100%",
-        height: "100%",
-        background: hovered ? item.subtle : "var(--bg-1)",
-        border: `1px solid ${hovered ? item.dim : "var(--bg-3)"}`,
-        borderRadius: "var(--radius-md)",
-        padding: "22px 18px 18px",
-        transition: "all 250ms cubic-bezier(0.4, 0, 0.2, 1)",
-        boxShadow: hovered
-          ? `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px ${item.dim}`
-          : "var(--shadow-card)",
-        transform: hovered ? "translateY(-3px)" : "translateY(0)",
-        cursor: "default",
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
+        display: "grid",
+        gridTemplateColumns: "180px 1fr auto",
+        gap: 20,
+        alignItems: "baseline",
+        padding: "14px 0",
+        borderBottom: "1px solid var(--bg-2)",
+        transition: "all 150ms",
       }}
     >
-      {/* Top accent line */}
-      <div
+      <span
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 2,
-          background: item.color,
-          opacity: hovered ? 1 : 0.5,
-          transition: "opacity 250ms",
-        }}
-      />
-
-      {/* Step number + label row */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          marginBottom: 12,
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 22,
-            fontWeight: 700,
-            color: item.color,
-            opacity: hovered ? 1 : 0.4,
-            transition: "opacity 250ms",
-            lineHeight: 1,
-          }}
-        >
-          {String(index + 1).padStart(2, "0")}
-        </span>
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 13,
-            fontWeight: 600,
-            color: item.color,
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
-          }}
-        >
-          {item.label}
-        </span>
-      </div>
-
-      {/* Description */}
-      <div
-        style={{
+          fontFamily: "var(--font-mono)",
           fontSize: 13,
-          color: "var(--fg-1)",
-          lineHeight: 1.65,
-          marginBottom: 14,
-          flex: 1,
+          fontWeight: 500,
+          color: hovered ? "var(--fg-0)" : "var(--fg-1)",
+          transition: "color 150ms",
         }}
       >
-        {item.description}
-      </div>
-
-      {/* Tool tags */}
-      <div className="flex flex-wrap gap-1.5">
-        {item.tools.map((tool) => (
-          <span
-            key={tool}
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 10,
-              padding: "2px 8px",
-              borderRadius: "var(--radius-sm)",
-              color: item.color,
-              background: item.subtle,
-              border: `1px solid ${item.dim}`,
-              letterSpacing: "0.04em",
-              opacity: hovered ? 1 : 0.6,
-              transition: "opacity 250ms",
-            }}
+        {project.title}
+      </span>
+      <span style={{ fontSize: 12, color: "var(--fg-2)", lineHeight: 1.5 }}>
+        {project.description}
+      </span>
+      <div style={{ display: "flex", gap: 10, fontSize: 11, fontFamily: "var(--font-mono)", flexShrink: 0 }}>
+        {project.url && (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--green-primary)", textDecoration: "none" }}
           >
-            {tool}
-          </span>
-        ))}
+            live ↗
+          </a>
+        )}
+        <a
+          href={project.repo}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "var(--fg-3)", textDecoration: "none" }}
+        >
+          source ↗
+        </a>
       </div>
     </div>
   );
 }
 
-export function Approach() {
+export function Archive() {
   return (
     <div>
       <AnimateIn>
-        <div style={sectionLabelStyle}>$ cat pipeline.md</div>
-        <div style={sectionTitleStyle}>How I work</div>
+        <div style={sectionLabelStyle}>$ ls archive/</div>
+        <div style={sectionTitleStyle}>Archive / Lab</div>
       </AnimateIn>
 
-      {/* Pipeline header — input → output */}
-      <AnimateIn delay={50}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            marginBottom: 24,
-            fontFamily: "var(--font-mono)",
-            fontSize: 12,
-          }}
-        >
-          <span style={{ color: "var(--fg-2)", letterSpacing: "0.05em" }}>raw data</span>
-          <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg, var(--cyan-dim), var(--amber-dim), var(--purple-muted), var(--green-dim))", opacity: 0.5 }} />
-          <span style={{ color: "var(--fg-2)", letterSpacing: "0.05em" }}>deployed product</span>
+      <AnimateIn delay={80}>
+        <div style={{ borderTop: "1px solid var(--bg-2)" }}>
+          {ARCHIVE_PROJECTS.map((project) => (
+            <ArchiveRow key={project.title} project={project} />
+          ))}
         </div>
       </AnimateIn>
-
-      {/* Pipeline steps — responsive grid */}
-      <div
-        className="pipeline-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 16,
-        }}
-      >
-        {APPROACH_ITEMS.map((item, i) => (
-          <AnimateIn key={item.label} delay={i * 120}>
-            <PipelineStep item={item} index={i} />
-          </AnimateIn>
-        ))}
-      </div>
     </div>
   );
 }
 
 /* ----------------------------------------------------------------
-   Exhibits
-   ---------------------------------------------------------------- */
-
-export function Exhibits() {
-  return (
-    <div>
-      <AnimateIn>
-        <div style={sectionLabelStyle}>$ ls projects/</div>
-        <div style={sectionTitleStyle}>What I build</div>
-      </AnimateIn>
-
-      {/* Featured projects */}
-      <div className="flex flex-col" style={{ gap: 16, marginBottom: 20 }}>
-        {FEATURED_PROJECTS.map((project, i) => (
-          <AnimateIn key={project.title} delay={i * 120}>
-            <FeaturedCard project={project} chart={FEATURED_CHARTS[i]} index={i} />
-          </AnimateIn>
-        ))}
-      </div>
-
-      {/* Compact projects — equal height grid */}
-      <div
-        className="compact-grid grid"
-        style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}
-      >
-        {COMPACT_PROJECTS.map((project, i) => (
-          <AnimateIn key={project.title} delay={(i + 3) * 80}>
-            <CompactCard project={project} />
-          </AnimateIn>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ----------------------------------------------------------------
-   Skills
-   ---------------------------------------------------------------- */
-
-export function Skills() {
-  return (
-    <div>
-      <AnimateIn>
-        <div style={sectionLabelStyle}>$ ls ~/.skills/</div>
-        <div style={sectionTitleStyle}>Tech stack</div>
-      </AnimateIn>
-      <AnimateIn delay={150}>
-        <SkillsTable />
-      </AnimateIn>
-    </div>
-  );
-}
-
-/* ----------------------------------------------------------------
-   About — ASCII portrait inside the info box
+   About — positioning statement, not a bio
    ---------------------------------------------------------------- */
 
 const ABOUT_ENTRIES: { label: string; value: string; link?: string }[] = [
@@ -987,7 +811,7 @@ const ASCII_PORTRAIT = `                  .:::.
               :=#%%@@@@@@@%*=.
             :*@@@@@@@@@@@@@@@%*-
           .+@@@@@%*+====+*%@@@@@*
-          +%@@@@%*=-::::..-%@@%@@+
+          +%@@@@%*=-:::::.-%@@%@@+
           +@@@@%#+=-:::::::*@@@@@%-
           *@@@@%###*=::+#**+%@@@@@+
           =@@@%##**#*::=+==-=%@@@%-
@@ -1030,7 +854,6 @@ function ParticleAscii() {
       if (!ctx) return;
 
       const dpr = window.devicePixelRatio || 1;
-      // Monospace char dimensions at font-size 9px, line-height 1.15
       const CHAR_W = 5.42;
       const CHAR_H = 10.35;
 
@@ -1045,7 +868,6 @@ function ParticleAscii() {
       canvas.style.height = `${H}px`;
       ctx.scale(dpr, dpr);
 
-      // Collect target positions from non-space chars
       interface Particle {
         x: number; y: number;
         tx: number; ty: number;
@@ -1078,12 +900,10 @@ function ParticleAscii() {
         }
       });
 
-      const GREEN = "0, 166, 40"; // rgb for green-muted
+      const GREEN = "0, 166, 40";
 
       const draw = () => {
         ctx.clearRect(0, 0, W, H);
-
-        let allSettled = true;
 
         for (const p of particles) {
           const dx = p.tx - p.x;
@@ -1091,8 +911,6 @@ function ParticleAscii() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (!p.settled) {
-            allSettled = false;
-            // Spring toward target
             p.vx += dx * 0.06;
             p.vy += dy * 0.06;
             p.vx *= 0.78;
@@ -1102,7 +920,6 @@ function ParticleAscii() {
             p.alpha = Math.min(1, p.alpha + 0.025);
             if (dist < 1.2) p.settled = true;
           } else {
-            // Gentle orbit drift
             p.phase += p.phaseSpeed;
             p.x = p.tx + Math.cos(p.phase) * p.driftR;
             p.y = p.ty + Math.sin(p.phase * 1.3) * p.driftR;
@@ -1141,7 +958,7 @@ export function About() {
       </AnimateIn>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        {/* Combined info card with ASCII — full width */}
+        {/* Info card with ASCII */}
         <AnimateIn delay={100}>
           <div
             style={{
@@ -1157,16 +974,8 @@ export function About() {
             }}
             className="hero-grid"
           >
-            {/* ASCII portrait — animated decode */}
             <ParticleAscii />
-
-            {/* Info grid */}
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 13,
-              }}
-            >
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: 13 }}>
               <div
                 style={{
                   display: "grid",
@@ -1198,25 +1007,28 @@ export function About() {
           </div>
         </AnimateIn>
 
-        {/* Bio — same full width */}
+        {/* Positioning statement */}
         <AnimateIn delay={200}>
           <div
             style={{
               fontSize: 14,
-              lineHeight: 1.8,
+              lineHeight: 1.85,
               color: "var(--fg-1)",
               background: "var(--bg-1)",
               border: "1px solid var(--bg-3)",
               borderRadius: "var(--radius-md)",
-              padding: "24px 32px",
+              padding: "28px 32px",
               boxShadow: "var(--shadow-card)",
             }}
           >
-            <p style={{ marginBottom: 12 }}>
-              Trained as an architect. Ended up building with data. Both fields reward the same thing: thinking in systems, obsessing over detail, and knowing when something isn&apos;t finished yet.
+            <p style={{ marginBottom: 16 }}>
+              Trained as an architect. Ended up building with data. Both fields reward the same instincts: think in systems, care about the parts nobody sees, and know when something is not finished yet.
             </p>
-            <p style={{ color: "var(--fg-0)" }}>
-              I want to build AI products that help people make better decisions — with a team that ships fast and cares about impact.
+            <p style={{ marginBottom: 16 }}>
+              I specialize in the full pipeline — collecting data nobody else wanted to touch, building models that answer a specific question, deploying tools that people actually use. Comfortable at every layer: scraping, ETL, ML, LLMs, APIs, UI. Not a generalist. Just someone who refuses to stop at the interesting part.
+            </p>
+            <p style={{ color: "var(--fg-0)", fontWeight: 500 }}>
+              Currently looking for a data science role where the job is to make things, not report them.
             </p>
           </div>
         </AnimateIn>
@@ -1226,7 +1038,7 @@ export function About() {
 }
 
 /* ----------------------------------------------------------------
-   Contact — two-column layout with direct links + form
+   Contact
    ---------------------------------------------------------------- */
 
 const CONTACT_LINKS = [
@@ -1301,7 +1113,6 @@ export function Contact() {
           alignItems: "stretch",
         }}
       >
-        {/* Left: Direct contact links — stretch to match form height */}
         <AnimateIn delay={100}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, height: "100%" }}>
             {CONTACT_LINKS.map((link) => (
@@ -1346,7 +1157,6 @@ export function Contact() {
           </div>
         </AnimateIn>
 
-        {/* Right: Contact form */}
         <AnimateIn delay={200}>
           <div
             style={{
@@ -1377,10 +1187,7 @@ export function Contact() {
                 <span style={{ marginRight: 8 }}>●</span> message sent. renzo will respond shortly.
               </div>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-4"
-              >
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                   <label style={labelStyle}>from</label>
                   <input
@@ -1408,11 +1215,7 @@ export function Contact() {
                     required
                     placeholder="your message..."
                     rows={4}
-                    style={{
-                      ...inputStyle,
-                      resize: "vertical",
-                      minHeight: 80,
-                    }}
+                    style={{ ...inputStyle, resize: "vertical", minHeight: 80 }}
                   />
                 </div>
                 {status === "error" && (

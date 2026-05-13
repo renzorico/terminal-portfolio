@@ -1,6 +1,6 @@
 import TerminalHeader from "./components/terminal-header";
 import Hero from "./components/hero";
-import { Approach, Exhibits, Skills, About, Contact } from "./components/sections";
+import { Exhibits, Archive, About, Contact } from "./components/sections";
 
 const sectionStyle: React.CSSProperties = {
   maxWidth: 1100,
@@ -27,11 +27,8 @@ export default function Home() {
         <section id="exhibits" style={{ ...sectionStyle, ...dividerStyle }}>
           <Exhibits />
         </section>
-        <section id="approach" style={{ ...sectionStyle, ...dividerStyle }}>
-          <Approach />
-        </section>
-        <section id="skills" style={{ ...sectionStyle, ...dividerStyle }}>
-          <Skills />
+        <section id="archive" style={{ ...sectionStyle, ...dividerStyle }}>
+          <Archive />
         </section>
         <section id="contact" style={{ ...sectionStyle, ...dividerStyle }}>
           <Contact />
