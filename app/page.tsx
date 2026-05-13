@@ -3,7 +3,7 @@ import Hero from "./components/hero";
 import { Approach, Exhibits, Skills, About, Contact } from "./components/sections";
 
 const sectionStyle: React.CSSProperties = {
-  maxWidth: 900,
+  maxWidth: 1100,
   margin: "0 auto",
   padding: "64px 20px",
 };

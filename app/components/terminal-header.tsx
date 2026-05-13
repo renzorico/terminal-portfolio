@@ -33,7 +33,7 @@ export default function TerminalHeader() {
     >
       <div
         className="flex items-center justify-between mx-auto"
-        style={{ padding: "12px 20px", maxWidth: 960 }}
+        style={{ padding: "12px 20px", maxWidth: 1140 }}
       >
         {/* Brand */}
         <button

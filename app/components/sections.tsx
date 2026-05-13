@@ -78,7 +78,7 @@ const sectionLabelStyle: React.CSSProperties = {
 
 const sectionTitleStyle: React.CSSProperties = {
   fontFamily: "var(--font-display)",
-  fontSize: "var(--text-3xl, 2.441rem)",
+  fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
   fontWeight: 600,
   color: "var(--fg-0)",
   marginBottom: 32,
@@ -135,7 +135,7 @@ export function Approach() {
     <div>
       <AnimateIn>
         <div style={sectionLabelStyle}>$ cat pipeline.md</div>
-        <div style={sectionTitleStyle}>HOW I WORK</div>
+        <div style={sectionTitleStyle}>How I work</div>
       </AnimateIn>
       <div
         className="grid gap-4"
@@ -157,13 +157,17 @@ export function Approach() {
                   fontSize: 11,
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
-                  color: item.color,
                   fontWeight: 600,
                   marginBottom: 8,
                   fontFamily: "var(--font-mono)",
+                  display: "flex",
+                  gap: 8,
                 }}
               >
-                {String(i + 1).padStart(2, "0")} {item.label}
+                <span style={{ color: "var(--amber-primary)" }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span style={{ color: item.color }}>{item.label}</span>
               </div>
               <div style={{ fontSize: 13, color: "var(--fg-1)", lineHeight: 1.6 }}>
                 {item.description}
@@ -180,19 +184,161 @@ export function Approach() {
    Exhibits
    ---------------------------------------------------------------- */
 
+function FeaturedCard({ title, description, tags = [], metrics, url, repo }: {
+  title: string;
+  description: string;
+  tags?: string[];
+  metrics?: string;
+  url?: string;
+  repo?: string;
+}) {
+  const primaryLink = url ?? repo;
+  const Wrapper = primaryLink ? "a" : "div";
+  const wrapperProps = primaryLink
+    ? { href: primaryLink, target: "_blank" as const, rel: "noopener noreferrer" as const }
+    : {};
+
+  return (
+    <Wrapper
+      {...wrapperProps}
+      className="featured-card"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 0,
+        background: "var(--bg-1)",
+        border: "1px solid var(--fg-3)",
+        borderLeft: "3px solid var(--amber-primary)",
+        borderRadius: "var(--radius-sm)",
+        overflow: "hidden",
+        textDecoration: "none",
+        color: "inherit",
+        transition: "border-color 200ms, box-shadow 200ms",
+      }}
+    >
+      {/* Left: content */}
+      <div style={{ padding: 24, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <div
+          style={{
+            fontSize: 10,
+            color: "var(--amber-primary)",
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            fontFamily: "var(--font-mono)",
+            marginBottom: 8,
+          }}
+        >
+          featured project
+        </div>
+        <div
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: 20,
+            fontWeight: 600,
+            color: "var(--fg-0)",
+            marginBottom: 12,
+          }}
+        >
+          {title}
+        </div>
+        <div
+          style={{
+            fontSize: 14,
+            color: "var(--fg-1)",
+            lineHeight: 1.7,
+            fontFamily: "var(--font-display)",
+            marginBottom: 16,
+          }}
+        >
+          {description}
+        </div>
+        <div className="flex items-center gap-3" style={{ fontSize: 11 }}>
+          {url && <span style={{ color: "var(--green-primary)" }}>live ↗</span>}
+          {repo && (
+            <span
+              style={{ color: "var(--fg-2)" }}
+              onClick={(e) => {
+                if (url) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.open(repo, "_blank", "noopener,noreferrer");
+                }
+              }}
+            >
+              source ↗
+            </span>
+          )}
+        </div>
+      </div>
+      {/* Right: tags + metrics */}
+      <div
+        style={{
+          padding: 24,
+          background: "var(--bg-2)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 16,
+        }}
+      >
+        {metrics && (
+          <div style={{ fontSize: 12, color: "var(--fg-2)", fontFamily: "var(--font-mono)" }}>
+            {metrics}
+          </div>
+        )}
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                padding: "4px 10px",
+                borderRadius: "var(--radius-sm)",
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+                fontWeight: 500,
+                color: "var(--amber-primary)",
+                background: "var(--amber-subtle)",
+                border: "1px solid var(--amber-dim)",
+              }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </Wrapper>
+  );
+}
+
 export function Exhibits() {
+  const featured = EXHIBITS.slice(0, 2);
+  const rest = EXHIBITS.slice(2);
+
   return (
     <div>
       <AnimateIn>
         <div style={sectionLabelStyle}>$ ls projects/</div>
-        <div style={sectionTitleStyle}>PROJECTS</div>
+        <div style={sectionTitleStyle}>What I build</div>
       </AnimateIn>
+
+      {/* Featured projects — full width */}
+      <div className="flex flex-col gap-4" style={{ marginBottom: 20 }}>
+        {featured.map((ex, i) => (
+          <AnimateIn key={ex.title} delay={i * 150}>
+            <FeaturedCard {...ex} />
+          </AnimateIn>
+        ))}
+      </div>
+
+      {/* Remaining projects — grid */}
       <div
         className="grid gap-4"
         style={{ gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))" }}
       >
-        {EXHIBITS.map((ex, i) => (
-          <AnimateIn key={ex.title} delay={i * 100}>
+        {rest.map((ex, i) => (
+          <AnimateIn key={ex.title} delay={(i + 2) * 100}>
             <ExhibitCard {...ex} />
           </AnimateIn>
         ))}
@@ -210,7 +356,7 @@ export function Skills() {
     <div>
       <AnimateIn>
         <div style={sectionLabelStyle}>$ ls ~/.skills/</div>
-        <div style={sectionTitleStyle}>SKILLS</div>
+        <div style={sectionTitleStyle}>Tech stack</div>
       </AnimateIn>
       <AnimateIn delay={150}>
         <div
@@ -246,7 +392,7 @@ export function About() {
     <div>
       <AnimateIn>
         <div style={sectionLabelStyle}>$ cat about.md</div>
-        <div style={sectionTitleStyle}>ABOUT</div>
+        <div style={sectionTitleStyle}>About</div>
       </AnimateIn>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         {/* Info table */}
@@ -353,7 +499,7 @@ export function Contact() {
     <div>
       <AnimateIn>
         <div style={sectionLabelStyle}>$ ./contact.sh</div>
-        <div style={sectionTitleStyle}>CONTACT</div>
+        <div style={sectionTitleStyle}>Get in touch</div>
       </AnimateIn>
       <AnimateIn delay={150}>
         {status === "sent" ? (
