@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TerminalPrompt from "./terminal-prompt";
+import GitLogTerminal from "./git-log-terminal";
 
 /* ----------------------------------------------------------------
    Typing effect
@@ -289,8 +289,8 @@ export default function Hero() {
         <PipelineTerminal />
       </div>
 
-      {/* Interactive terminal */}
-      <TerminalPrompt />
+      {/* Project git log */}
+      <GitLogTerminal />
     </div>
   );
 }
