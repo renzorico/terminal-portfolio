@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, type FormEvent } from "react";
 import AnimateIn from "./animate-in";
+import SkillsTable from "./skills-table";
 
 /* ----------------------------------------------------------------
    Data — Exhibits (case-study format)
@@ -28,15 +29,16 @@ const EXHIBITS: Exhibit[] = [
     id: "EX-01",
     title: "ds-radar",
     problem:
-      "Job searching at scale is manual, slow, and biased by first impressions. Reading 142 listings a day to find 12 relevant ones is not a viable workflow.",
-    input: "7 job boards · 142 daily listings · structured candidate profile",
+      "Job searching for data roles is repetitive and noisy. Good opportunities are scattered across sources, and evaluating each listing manually does not scale.",
+    input:
+      "CSV job feeds · structured candidate profile · tracker state · evaluation history",
     approach:
-      "Three agents run sequentially: a scraper collects raw listings, a parser extracts structured requirements via LLMs, a scorer ranks each listing against the candidate profile. Coordinated with a single CLI command.",
+      "Built an automated job scanning, evaluation, and tracking pipeline. New feeds are ingested, listings are evaluated against a structured profile, decisions are written into canonical tracker files, and eval markdowns stay linked to the operational state.",
     challenge:
-      "Score drift — the scoring agent produced inconsistent results across runs with identical inputs. Resolved by enforcing a structured JSON output schema and calibrating temperature to near-zero for the scoring step.",
+      "Keeping the pipeline reliable as it evolved. I tightened the system around a single source of truth — tracker.tsv, scan-history.tsv, and eval artifacts — so repairs, history, and downstream tooling all point to the same canonical state.",
     result:
-      "12 curated matches per day · 4.2s end-to-end runtime · zero manual review required",
-    tags: ["python", "ai-agents", "llms", "rest-apis"],
+      "A reproducible workflow for ingesting job feeds, scoring relevance, tracking decisions, and generating linked evaluation artifacts for DS and analytics job searches.",
+    tags: ["python", "llms", "automation", "data-pipelines"],
     accent: "var(--cyan-primary)",
     accentDim: "var(--cyan-dim)",
     accentSubtle: "var(--cyan-subtle)",
@@ -46,15 +48,16 @@ const EXHIBITS: Exhibit[] = [
     id: "EX-02",
     title: "no-botes-tu-voto",
     problem:
-      "Colombian voters had no reliable tool to compare presidential candidates on policy. Manifestos are long, vague, and written to avoid concrete commitments.",
-    input: "Candidate manifestos · press statements · 12 structured policy dimensions · 6 candidates",
+      "Presidential campaigns produce long, ambiguous political messaging, but voters need a clearer way to compare candidates on concrete issues.",
+    input:
+      "Documented candidate positions · 25 quiz questions · 7 key themes · 6 presidential candidates",
     approach:
-      "Scraped and normalized policy documents. LLMs classified each candidate's stance on health, economy, security, environment, and 8 other dimensions. A scoring engine matched voter answers to candidate positions across the full policy space.",
+      "Built an independent voter-alignment tool for the Colombian 2026 election. Users answer 25 questions, and their responses are compared against documented candidate positions with transparent sourcing and methodology.",
     challenge:
-      "Political language is engineered to be ambiguous. Standard classification returned too many neutral labels. Solved with multi-pass prompting and an explicit uncertainty class that surfaced honest gaps rather than forcing alignment.",
+      "Political positions are often vague or incomplete. The product had to stay useful without pretending every candidate had a clean, fully structured stance on every issue.",
     result:
-      "Deployed tool · 6 candidates · 12 policy dimensions scored · live through the 2023 Colombian election cycle",
-    tags: ["python", "llms", "web-scraping", "prompt-engineering"],
+      "A live public quiz experience for Colombia 2026 that helps users compare six candidates across seven key topics using documented sources and a transparent methodology.",
+    tags: ["civic-tech", "next.js", "typescript", "data-curation"],
     accent: "var(--green-primary)",
     accentDim: "var(--green-dim)",
     accentSubtle: "var(--green-subtle)",
@@ -65,57 +68,81 @@ const EXHIBITS: Exhibit[] = [
     id: "EX-03",
     title: "un-speeches",
     problem:
-      "The UN General Assembly has 50+ years of diplomatic speech on record. There is no accessible tool to explore how geopolitical language has shifted over time.",
-    input: "8,000+ speeches · 50+ countries · 1970–2024 · raw text transcripts",
+      "UN General Assembly speeches contain decades of geopolitical signal, but they are difficult to explore systematically without a purpose-built analysis workflow.",
+    input:
+      "8,000+ UN General Debate speeches · multi-decade text corpus · country and year metadata",
     approach:
-      "Topic modeling (LDA) to surface dominant themes per decade. TensorFlow sentiment analysis to track tone around major geopolitical events. Generative AI synthesis of findings. Streamlit dashboard for interactive exploration.",
+      "Built an NLP exploration project around the UN speech corpus, combining text preprocessing, thematic analysis, and an interactive app layer to make long-run diplomatic language easier to inspect.",
     challenge:
-      "Diplomatic language is intentionally repetitive and ambiguous — general-purpose NLP models performed poorly. Required custom preprocessing, stop-word expansion for UN-specific jargon, and fine-tuned sentiment thresholds calibrated against known events.",
+      "Diplomatic language is repetitive, formal, and full of domain-specific phrasing, so generic off-the-shelf text analysis produces shallow results unless the preprocessing and framing are adapted to the corpus.",
     result:
-      "Topic evolution mapped across 5 decades · TensorFlow sentiment classifier · deployed Streamlit dashboard",
-    tags: ["python", "tensorflow", "nlp", "gcp"],
+      "An interactive UN speeches analysis project that turns a large diplomatic text archive into something searchable, inspectable, and analytically usable.",
+    tags: ["python", "nlp", "topic-modeling", "streamlit"],
     accent: "var(--amber-primary)",
     accentDim: "var(--amber-dim)",
     accentSubtle: "var(--amber-subtle)",
     url: "https://speeches-at-un.streamlit.app/",
-    repo: "https://github.com/renzorico/un-speeches",
   },
-];
-
-interface ArchiveProject {
-  title: string;
-  description: string;
-  tags: string[];
-  url?: string;
-  repo: string;
-}
-
-const ARCHIVE_PROJECTS: ArchiveProject[] = [
   {
+    id: "EX-04",
     title: "the-london-bible",
-    description:
-      "Geospatial analysis of London neighborhoods — transport, culture, and livability scored and mapped interactively.",
-    tags: ["typescript", "next.js", "maplibre", "supabase"],
+    problem:
+      "London is experienced as layers — transport, density, amenities, schools, hospitals, housing, and geography — but those layers are rarely explored together in one place.",
+    input:
+      "London borough and ward geometry · MSOA density data · Tube lines · bikes · POIs · schools · hospitals and other civic overlays",
+    approach:
+      "Built a self-contained London atlas: a static web app that combines multiple civic and spatial layers into a single editorial mapping experience with switches for views, metrics, overlays, and location-based exploration.",
+    challenge:
+      "The hard part was not just gathering datasets, but turning them into a coherent and legible map product with consistent overlays and a browsing experience that invites comparison rather than overwhelming the user.",
+    result:
+      "A deployed interactive London atlas that lets users explore density, transport, amenities, and civic infrastructure through one layered map interface.",
+    tags: ["html", "python", "geojson", "mapping"],
+    accent: "var(--green-primary)",
+    accentDim: "var(--green-dim)",
+    accentSubtle: "var(--green-subtle)",
     url: "https://the-london-bible.netlify.app/",
     repo: "https://github.com/renzorico/the-london-bible",
   },
   {
+    id: "EX-05",
     title: "legalize-co",
-    description:
-      "Open-source ETL pipeline that parses Colombian legislation from raw PDFs into structured, searchable data.",
-    tags: ["python", "data-pipelines"],
+    problem:
+      "Colombian legislation is hard to query, version, and build on as data, even though the legal corpus is public and structurally important for civic tooling.",
+    input:
+      "SUIN-Juriscol legislation records · laws, decrees, resolutions, and legislative acts · 1887 to present",
+    approach:
+      "Built a pipeline that fetches Colombian legislation from SUIN-Juriscol and stores each law as versioned Markdown in git, turning legal text into a browsable, structured, legislation-as-code repository.",
+    challenge:
+      "Source-system constraints made corpus discovery and retrieval messy: the SOAP search endpoint returns invalid XML, and the source TLS chain is broken locally, so the pipeline had to work around unreliable infrastructure.",
+    result:
+      "A growing open-source corpus of Colombian legislation in Markdown, versioned in git, with 71,500 laws committed in the current repository state.",
+    tags: ["python", "etl", "civic-tech", "open-data"],
+    accent: "var(--cyan-primary)",
+    accentDim: "var(--cyan-dim)",
+    accentSubtle: "var(--cyan-subtle)",
     repo: "https://github.com/renzorico/legalize-co",
   },
   {
+    id: "EX-06",
     title: "bjj-universe",
-    description:
-      "Force-directed network graph of competitive BJJ. Athlete connections, rankings, and match history in 3D.",
-    tags: ["javascript", "three.js", "d3.js"],
+    problem:
+      "Brazilian Jiu-Jitsu competition data contains rich relationship structure — athletes, matches, eras, and rivalries — but it is rarely presented as a network people can explore.",
+    input:
+      "ADCC historical match data · processed graph-ready datasets · athlete and match relationships",
+    approach:
+      "Built a graph-first exploration platform for grappling competition networks. Athletes become nodes, matches become directed winner-to-loser edges, and the interface is designed as a living atlas for rivalries, bridges, and clusters.",
+    challenge:
+      "The product needed a clean foundation before chasing visual spectacle, so the work focused on strict typing, reproducible data processing, graph-ready structures, and a UI that could grow into a serious analytics tool.",
+    result:
+      "A deployed interactive BJJ graph experience backed by processed ADCC data, with a production-grade frontend foundation and a clear path toward deeper competition analytics.",
+    tags: ["react", "typescript", "sigma.js", "graph-data"],
+    accent: "var(--purple-primary)",
+    accentDim: "var(--purple-dim)",
+    accentSubtle: "var(--purple-subtle)",
     url: "https://renzorico.github.io/bjj-universe/",
     repo: "https://github.com/renzorico/bjj-universe",
   },
 ];
-
 /* ----------------------------------------------------------------
    Tag colors
    ---------------------------------------------------------------- */
@@ -529,19 +556,346 @@ function SpeechesChart() {
   return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
 }
 
-const EXHIBIT_CHARTS = [RadarChart, VoteChart, SpeechesChart];
+function MapChart() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const W = 220;
+    const H = 120;
+    canvas.width = W;
+    canvas.height = H;
+
+    interface Dot {
+      x: number;
+      y: number;
+      score: number;
+      phase: number;
+      phaseSpeed: number;
+    }
+
+    const dots: Dot[] = [];
+    for (let i = 0; i < 40; i++) {
+      dots.push({
+        x: 30 + Math.random() * 160,
+        y: 20 + Math.random() * 75,
+        score: 0.2 + Math.random() * 0.8,
+        phase: Math.random() * Math.PI * 2,
+        phaseSpeed: 0.01 + Math.random() * 0.02,
+      });
+    }
+
+    let animId: number;
+    let t = 0;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      t += 0.02;
+
+      ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
+      ctx.font = "9px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("livability score by area", W / 2, 10);
+
+      ctx.strokeStyle = "rgba(68, 68, 68, 0.3)";
+      ctx.lineWidth = 0.5;
+      ctx.setLineDash([2, 4]);
+      ctx.strokeRect(30, 18, 160, 80);
+      ctx.setLineDash([]);
+
+      dots.forEach((d) => {
+        d.phase += d.phaseSpeed;
+        const pulse = 0.6 + Math.sin(d.phase) * 0.4;
+        const r = 2 + d.score * 3;
+
+        const green = Math.round(160 + d.score * 60);
+        ctx.fillStyle = `rgba(0, ${green}, 50, ${pulse * 0.6})`;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, r + Math.sin(d.phase) * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = `rgba(0, ${green}, 50, ${pulse * 0.15})`;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, r * 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      const scanX = 30 + ((t * 20) % 160);
+      ctx.strokeStyle = "rgba(0, 214, 50, 0.15)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(scanX, 18);
+      ctx.lineTo(scanX, 98);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
+      ctx.font = "9px monospace";
+      ctx.textAlign = "left";
+      ctx.fillText("600+ neighborhoods", 10, 112);
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
+}
+
+function PipelineChart() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const W = 220;
+    const H = 120;
+    canvas.width = W;
+    canvas.height = H;
+
+    const steps = [
+      { y: 20, label: "extract", color: "#00bcd4" },
+      { y: 45, label: "segment", color: "#e5a500" },
+      { y: 70, label: "parse", color: "#9d4edd" },
+      { y: 95, label: "index", color: "#00d632" },
+    ];
+
+    interface Block {
+      x: number;
+      step: number;
+      width: number;
+      speed: number;
+      alpha: number;
+    }
+
+    const blocks: Block[] = [];
+    for (let i = 0; i < 12; i++) {
+      blocks.push({
+        x: Math.random() * W,
+        step: Math.floor(Math.random() * 4),
+        width: 8 + Math.random() * 20,
+        speed: 0.3 + Math.random() * 0.5,
+        alpha: 0.3 + Math.random() * 0.5,
+      });
+    }
+
+    let animId: number;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+
+      ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
+      ctx.font = "9px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("pdf → structured data", W / 2, 12);
+
+      steps.forEach((s) => {
+        ctx.strokeStyle = s.color;
+        ctx.globalAlpha = 0.1;
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(50, s.y);
+        ctx.lineTo(210, s.y);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = "rgba(102, 102, 102, 0.7)";
+        ctx.font = "8px monospace";
+        ctx.textAlign = "right";
+        ctx.fillText(s.label, 46, s.y + 3);
+      });
+
+      blocks.forEach((b) => {
+        b.x += b.speed;
+        if (b.x > 215) {
+          b.x = 50;
+          b.step = (b.step + 1) % 4;
+          b.width = 8 + Math.random() * 20;
+        }
+
+        const step = steps[b.step];
+        ctx.fillStyle = step.color;
+        ctx.globalAlpha = b.alpha;
+        ctx.fillRect(b.x, step.y - 3, b.width, 6);
+        ctx.globalAlpha = 1;
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
+}
+
+function NetworkChart() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const W = 220;
+    const H = 120;
+    canvas.width = W;
+    canvas.height = H;
+
+    interface Node {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+      phase: number;
+      phaseSpeed: number;
+    }
+
+    const colors = ["#9d4edd", "#c77dff", "#7b2cbf", "#9d4edd", "#c77dff"];
+    const nodes: Node[] = [];
+    for (let i = 0; i < 18; i++) {
+      nodes.push({
+        x: 40 + Math.random() * 140,
+        y: 20 + Math.random() * 80,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: 2 + Math.random() * 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        phase: Math.random() * Math.PI * 2,
+        phaseSpeed: 0.008 + Math.random() * 0.015,
+      });
+    }
+
+    const edges: [number, number][] = [];
+    for (let i = 0; i < nodes.length; i++) {
+      const numEdges = 1 + Math.floor(Math.random() * 2);
+      for (let e = 0; e < numEdges; e++) {
+        const j = Math.floor(Math.random() * nodes.length);
+        if (j !== i) edges.push([i, j]);
+      }
+    }
+
+    let animId: number;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+
+      ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
+      ctx.font = "9px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("athlete network", W / 2, 12);
+
+      nodes.forEach((n) => {
+        n.phase += n.phaseSpeed;
+        n.x += Math.cos(n.phase) * 0.2;
+        n.y += Math.sin(n.phase * 1.3) * 0.15;
+
+        if (n.x < 20) n.x = 20;
+        if (n.x > 200) n.x = 200;
+        if (n.y < 18) n.y = 18;
+        if (n.y > 105) n.y = 105;
+      });
+
+      edges.forEach(([i, j]) => {
+        const a = nodes[i];
+        const b = nodes[j];
+        const dist = Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+        if (dist < 80) {
+          ctx.strokeStyle = a.color;
+          ctx.globalAlpha = Math.max(0.05, 0.25 - dist / 320);
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      });
+
+      nodes.forEach((n) => {
+        const pulse = 0.5 + Math.sin(n.phase * 2) * 0.3;
+        ctx.fillStyle = n.color;
+        ctx.globalAlpha = 0.1;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.globalAlpha = pulse;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+
+      ctx.fillStyle = "rgba(102, 102, 102, 0.6)";
+      ctx.font = "9px monospace";
+      ctx.textAlign = "left";
+      ctx.fillText("1000+ nodes", 10, 115);
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
+}
+
+const EXHIBIT_CHARTS = [RadarChart, VoteChart, SpeechesChart, MapChart, PipelineChart, NetworkChart];
 
 /* ----------------------------------------------------------------
    Exhibit Block — case-study format
    ---------------------------------------------------------------- */
 
-const CASE_STUDY_ROWS: Array<{ key: keyof Exhibit; label: string }> = [
+const EXPANDABLE_ROWS: Array<{ key: keyof Exhibit; label: string }> = [
   { key: "problem", label: "problem" },
   { key: "input", label: "input" },
   { key: "approach", label: "approach" },
   { key: "challenge", label: "challenge" },
-  { key: "result", label: "result" },
 ];
+
+function CaseStudyRow({ label, value, accent }: { label: string; value: string; accent: string }) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "76px 1fr",
+        gap: 16,
+        alignItems: "baseline",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: 10,
+          color: accent,
+          textTransform: "uppercase",
+          letterSpacing: "0.1em",
+          paddingTop: 3,
+          opacity: 0.8,
+        }}
+      >
+        {label}
+      </span>
+      <span style={{ fontSize: 13, color: "var(--fg-1)", lineHeight: 1.65 }}>
+        {value}
+      </span>
+    </div>
+  );
+}
 
 function ExhibitBlock({
   exhibit,
@@ -550,18 +904,26 @@ function ExhibitBlock({
   exhibit: Exhibit;
   chart: React.ComponentType;
 }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
         background: "var(--bg-1)",
-        border: `1px solid var(--bg-3)`,
+        borderTop: `1px solid ${hovered ? exhibit.accentDim : "var(--bg-3)"}`,
+        borderRight: `1px solid ${hovered ? exhibit.accentDim : "var(--bg-3)"}`,
+        borderBottom: `1px solid ${hovered ? exhibit.accentDim : "var(--bg-3)"}`,
         borderLeft: `3px solid ${exhibit.accent}`,
         borderRadius: "var(--radius-md)",
         overflow: "hidden",
         boxShadow: "var(--shadow-card)",
+        transition: "border-color 280ms",
+        cursor: "default",
       }}
     >
-      {/* Header bar */}
+      {/* Header bar — always visible */}
       <div
         style={{
           display: "flex",
@@ -618,82 +980,119 @@ function ExhibitBlock({
         </div>
       </div>
 
-      {/* Content grid: case study + chart */}
+      {/* Collapsed: horizontal (chart right) · Expanded: chart hidden */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 240px",
+          gridTemplateColumns: hovered ? "1fr" : "1fr 240px",
           alignItems: "stretch",
+          transition: "grid-template-columns 350ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
         className="exhibit-content"
       >
-        {/* Left: case study rows */}
-        <div style={{ padding: "24px 28px", display: "flex", flexDirection: "column", gap: 14 }}>
-          {CASE_STUDY_ROWS.map((row) => (
-            <div
-              key={row.key}
+        {/* Left: expandable case study + always-visible result + tags */}
+        <div style={{ padding: "20px 28px", display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* Expandable rows: problem → input → approach → challenge */}
+          <div
+            style={{
+              overflow: "hidden",
+              maxHeight: hovered ? 480 : 0,
+              opacity: hovered ? 1 : 0,
+              transition: "max-height 380ms cubic-bezier(0.4, 0, 0.2, 1), opacity 260ms",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, paddingBottom: 14 }}>
+              {EXPANDABLE_ROWS.map((row) => (
+                <CaseStudyRow
+                  key={row.key}
+                  label={row.label}
+                  value={exhibit[row.key] as string}
+                  accent={exhibit.accent}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Result — always visible */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "76px 1fr",
+              gap: 16,
+              alignItems: "baseline",
+            }}
+          >
+            <span
               style={{
-                display: "grid",
-                gridTemplateColumns: "76px 1fr",
-                gap: 16,
-                alignItems: "baseline",
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                color: exhibit.accent,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                paddingTop: 3,
               }}
             >
-              <span
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 10,
-                  color: exhibit.accent,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  paddingTop: 3,
-                  opacity: 0.8,
-                }}
-              >
-                {row.label}
-              </span>
-              <span
-                style={{
-                  fontSize: 13,
-                  color: row.key === "result" ? "var(--fg-0)" : "var(--fg-1)",
-                  lineHeight: 1.65,
-                  fontWeight: row.key === "result" ? 500 : 400,
-                }}
-              >
-                {exhibit[row.key] as string}
-              </span>
-            </div>
-          ))}
+              result
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: "var(--fg-0)",
+                lineHeight: 1.65,
+                fontWeight: 500,
+              }}
+            >
+              {exhibit.result}
+            </span>
+          </div>
 
-          {/* Tags */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, paddingTop: 4 }}>
+          {/* Tags — always visible */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {exhibit.tags.map((tag) => (
               <TagPill key={tag} tag={tag} />
             ))}
           </div>
+
+          {/* Hint text — collapses when open */}
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              color: "var(--fg-3)",
+              letterSpacing: "0.06em",
+              maxHeight: hovered ? 0 : 20,
+              opacity: hovered ? 0 : 0.7,
+              overflow: "hidden",
+              transition: "opacity 180ms, max-height 180ms",
+            }}
+          >
+            hover to expand ›
+          </div>
         </div>
 
-        {/* Right: animated chart */}
-        <div
-          style={{
-            padding: "20px",
-            background: "var(--bg-2)",
-            borderLeft: "1px solid var(--bg-3)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          className="exhibit-chart"
-        >
-          <Chart />
-        </div>
+        {/* Chart: only visible when collapsed */}
+        {!hovered && (
+          <div
+            style={{
+              padding: "20px",
+              background: "var(--bg-2)",
+              borderLeft: "1px solid var(--bg-3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            className="exhibit-chart"
+          >
+            <Chart />
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 /* ----------------------------------------------------------------
-   Exhibits — three flagship case studies
+   Exhibits — six case studies
    ---------------------------------------------------------------- */
 
 export function Exhibits() {
@@ -715,83 +1114,6 @@ export function Exhibits() {
   );
 }
 
-/* ----------------------------------------------------------------
-   Archive — secondary projects, compact list
-   ---------------------------------------------------------------- */
-
-function ArchiveRow({ project }: { project: ArchiveProject }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "grid",
-        gridTemplateColumns: "180px 1fr auto",
-        gap: 20,
-        alignItems: "baseline",
-        padding: "14px 0",
-        borderBottom: "1px solid var(--bg-2)",
-        transition: "all 150ms",
-      }}
-    >
-      <span
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 13,
-          fontWeight: 500,
-          color: hovered ? "var(--fg-0)" : "var(--fg-1)",
-          transition: "color 150ms",
-        }}
-      >
-        {project.title}
-      </span>
-      <span style={{ fontSize: 12, color: "var(--fg-2)", lineHeight: 1.5 }}>
-        {project.description}
-      </span>
-      <div style={{ display: "flex", gap: 10, fontSize: 11, fontFamily: "var(--font-mono)", flexShrink: 0 }}>
-        {project.url && (
-          <a
-            href={project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "var(--green-primary)", textDecoration: "none" }}
-          >
-            live ↗
-          </a>
-        )}
-        <a
-          href={project.repo}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "var(--fg-3)", textDecoration: "none" }}
-        >
-          source ↗
-        </a>
-      </div>
-    </div>
-  );
-}
-
-export function Archive() {
-  return (
-    <div>
-      <AnimateIn>
-        <div style={sectionLabelStyle}>$ ls archive/</div>
-        <div style={sectionTitleStyle}>Archive / Lab</div>
-      </AnimateIn>
-
-      <AnimateIn delay={80}>
-        <div style={{ borderTop: "1px solid var(--bg-2)" }}>
-          {ARCHIVE_PROJECTS.map((project) => (
-            <ArchiveRow key={project.title} project={project} />
-          ))}
-        </div>
-      </AnimateIn>
-    </div>
-  );
-}
 
 /* ----------------------------------------------------------------
    About — positioning statement, not a bio
@@ -1033,6 +1355,25 @@ export function About() {
           </div>
         </AnimateIn>
       </div>
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------
+   Skills
+   ---------------------------------------------------------------- */
+
+export function Skills() {
+  return (
+    <div>
+      <AnimateIn>
+        <div style={sectionLabelStyle}>$ cat skills.md</div>
+        <div style={sectionTitleStyle}>Skills & Tools</div>
+      </AnimateIn>
+
+      <AnimateIn delay={100}>
+        <SkillsTable />
+      </AnimateIn>
     </div>
   );
 }

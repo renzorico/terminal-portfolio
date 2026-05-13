@@ -56,6 +56,8 @@
   --purple-bright: #c77dff;
   --purple-primary: #9d4edd;
   --purple-muted: #7b2cbf;
+  --purple-dim: #4a1a7a;
+  --purple-subtle: #1a0d2e;
 
   /* Semantic */
   --color-text: var(--fg-0);
