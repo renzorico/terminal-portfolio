@@ -14,7 +14,8 @@ interface ExhibitCardProps {
   description: string;
   tags?: string[];
   metrics?: string;
-  onClick?: () => void;
+  url?: string;
+  repo?: string;
 }
 
 export default function ExhibitCard({
@@ -22,15 +23,22 @@ export default function ExhibitCard({
   description,
   tags = [],
   metrics,
-  onClick,
+  url,
+  repo,
 }: ExhibitCardProps) {
   const [hovered, setHovered] = useState(false);
 
+  const primaryLink = url ?? repo;
+  const Wrapper = primaryLink ? "a" : "div";
+  const wrapperProps = primaryLink
+    ? { href: primaryLink, target: "_blank" as const, rel: "noopener noreferrer" as const }
+    : {};
+
   return (
-    <div
+    <Wrapper
+      {...wrapperProps}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
       style={{
         background: "var(--bg-2)",
         border: `1px solid ${hovered ? "var(--green-dim)" : "var(--fg-3)"}`,
@@ -39,6 +47,10 @@ export default function ExhibitCard({
         cursor: "pointer",
         transition: "border-color 200ms, box-shadow 200ms",
         boxShadow: hovered ? "var(--shadow-glow-md)" : "none",
+        display: "flex",
+        flexDirection: "column" as const,
+        textDecoration: "none",
+        color: "inherit",
       }}
     >
       {/* Title bar */}
@@ -69,6 +81,7 @@ export default function ExhibitCard({
             marginLeft: 4,
             color: hovered ? "var(--green-primary)" : "var(--fg-2)",
             fontSize: 11,
+            flex: 1,
           }}
         >
           ~/projects/{title}
@@ -76,16 +89,13 @@ export default function ExhibitCard({
       </div>
 
       {/* Body */}
-      <div style={{ padding: 14, fontSize: 13, lineHeight: 1.6, color: "var(--fg-1)" }}>
-        <div>
-          <span style={{ color: "var(--green-bright)", marginRight: 4 }}>&gt;</span>
-          <span style={{ color: "var(--fg-0)" }}>{description}</span>
-        </div>
+      <div style={{ padding: 14, fontSize: 13, lineHeight: 1.6, color: "var(--fg-1)", flex: 1 }}>
+        <div style={{ color: "var(--fg-0)", marginBottom: 8 }}>{description}</div>
         {metrics && (
-          <div style={{ color: "var(--fg-2)", fontSize: 11, marginTop: 6 }}>{metrics}</div>
+          <div style={{ color: "var(--fg-2)", fontSize: 11, marginBottom: 10 }}>{metrics}</div>
         )}
         {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5" style={{ marginTop: 10 }}>
+          <div className="flex flex-wrap gap-1.5">
             {tags.map((tag, i) => {
               const [color, bg, border] = TAG_COLORS[i % TAG_COLORS.length];
               return (
@@ -111,6 +121,39 @@ export default function ExhibitCard({
           </div>
         )}
       </div>
-    </div>
+
+      {/* Footer links */}
+      <div
+        className="flex items-center gap-3"
+        style={{
+          padding: "8px 14px",
+          borderTop: "1px solid var(--bg-3)",
+          fontSize: 11,
+        }}
+      >
+        {url && (
+          <span style={{ color: "var(--green-primary)" }}>
+            live ↗
+          </span>
+        )}
+        {repo && (
+          <span
+            style={{ color: "var(--fg-2)" }}
+            onClick={(e) => {
+              if (url) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(repo, "_blank", "noopener,noreferrer");
+              }
+            }}
+          >
+            source ↗
+          </span>
+        )}
+        {!url && !repo && (
+          <span style={{ color: "var(--fg-2)" }}>coming soon</span>
+        )}
+      </div>
+    </Wrapper>
   );
 }

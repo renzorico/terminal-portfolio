@@ -1,7 +1,6 @@
 import TerminalHeader from "./components/terminal-header";
 import Hero from "./components/hero";
-import BootSequence from "./components/boot-sequence";
-import { Exhibits, Skills, About, Contact } from "./components/sections";
+import { Approach, Exhibits, Skills, About, Contact } from "./components/sections";
 
 const sectionStyle: React.CSSProperties = {
   maxWidth: 900,
@@ -15,12 +14,15 @@ const dividerStyle: React.CSSProperties = {
 
 export default function Home() {
   return (
-    <BootSequence>
+    <>
       <div className="scanlines" />
       <TerminalHeader />
       <main>
         <section id="lobby" style={sectionStyle}>
           <Hero />
+        </section>
+        <section id="approach" style={{ ...sectionStyle, ...dividerStyle }}>
+          <Approach />
         </section>
         <section id="exhibits" style={{ ...sectionStyle, ...dividerStyle }}>
           <Exhibits />
@@ -42,10 +44,25 @@ export default function Home() {
           fontSize: 11,
           color: "var(--fg-2)",
           borderTop: "1px solid var(--fg-3)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 10,
         }}
       >
-        built with {"\u2588\u2591\u2591"} by renzo.rico · 2024 · src available on github
+        <div style={{ display: "flex", gap: 16, fontSize: 12 }}>
+          <a href="https://github.com/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-1)" }}>
+            github
+          </a>
+          <a href="https://linkedin.com/in/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-1)" }}>
+            linkedin
+          </a>
+          <a href="mailto:renzorico10@gmail.com" style={{ color: "var(--fg-1)" }}>
+            email
+          </a>
+        </div>
+        <div>renzo.rico · 2024</div>
       </footer>
-    </BootSequence>
+    </>
   );
 }

@@ -3,7 +3,8 @@
 import { useState } from "react";
 
 const NAV_ITEMS = [
-  { id: "lobby", label: "lobby" },
+  { id: "lobby", label: "home" },
+  { id: "approach", label: "approach" },
   { id: "exhibits", label: "projects" },
   { id: "skills", label: "skills" },
   { id: "about", label: "about" },
@@ -65,6 +66,27 @@ export default function TerminalHeader() {
               {item.label}
             </button>
           ))}
+          <span style={{ width: 1, height: 16, background: "var(--fg-3)" }} />
+          <a
+            href="https://github.com/renzorico"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--fg-1)", fontSize: 13, fontFamily: "var(--font-mono)", textDecoration: "none", transition: "color 150ms" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--fg-0)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--fg-1)")}
+          >
+            gh
+          </a>
+          <a
+            href="https://linkedin.com/in/renzorico"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--fg-1)", fontSize: 13, fontFamily: "var(--font-mono)", textDecoration: "none", transition: "color 150ms" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--fg-0)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--fg-1)")}
+          >
+            in
+          </a>
         </nav>
 
         {/* Mobile hamburger */}

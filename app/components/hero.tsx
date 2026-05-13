@@ -27,25 +27,37 @@ function useTypewriter(text: string, speed = 40, delay = 500) {
 }
 
 export default function Hero() {
-  const [title, titleDone] = useTypewriter("$ renzo.rico --about", 50, 300);
+  const [greeting, greetingDone] = useTypewriter("Renzo Rico", 60, 200);
 
   return (
     <div
       className="flex flex-col justify-center"
       style={{ minHeight: "70vh" }}
     >
+      <div style={{ marginBottom: 6 }}>
+        <span
+          style={{
+            fontSize: 11,
+            color: "var(--fg-2)",
+            textTransform: "uppercase",
+            letterSpacing: "0.15em",
+          }}
+        >
+          data scientist · london
+        </span>
+      </div>
       <h1
         style={{
           fontFamily: "var(--font-display)",
-          fontSize: "clamp(2rem, 6vw, 3.8rem)",
+          fontSize: "clamp(2.2rem, 6vw, 3.8rem)",
           fontWeight: 700,
           lineHeight: 1.15,
           color: "var(--fg-0)",
-          marginBottom: 12,
+          marginBottom: 16,
         }}
       >
-        {title}
-        {!titleDone && (
+        {greeting}
+        {!greetingDone && (
           <span
             style={{
               color: "var(--green-bright)",
@@ -60,13 +72,24 @@ export default function Hero() {
         style={{
           fontSize: "var(--text-md, 1.125rem)",
           color: "var(--fg-1)",
-          marginBottom: 32,
-          lineHeight: 1.6,
+          marginBottom: 12,
+          lineHeight: 1.7,
+          maxWidth: 540,
         }}
       >
-        data scientist · python · llms · ml · sql
-        <br />
-        i build things with a point. london.
+        I turn messy data into clear answers and working products.
+        Python, ML, NLP, SQL — from collection to deployment.
+      </p>
+      <p
+        style={{
+          fontSize: 13,
+          color: "var(--fg-2)",
+          marginBottom: 32,
+          lineHeight: 1.6,
+          maxWidth: 540,
+        }}
+      >
+        Trained as an architect, now building with data. I care about the full pipeline: scraping, cleaning, modelling, and shipping something people actually use.
       </p>
       <TerminalPrompt />
     </div>
