@@ -56,7 +56,7 @@ export default function TerminalHeader() {
         className="mx-auto"
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
+          gridTemplateColumns: "1fr 1fr 1fr",
           alignItems: "center",
           padding: "12px 24px",
           maxWidth: 1100,
@@ -72,7 +72,7 @@ export default function TerminalHeader() {
         </button>
 
         {/* Desktop nav — center column */}
-        <nav className="hidden sm:flex items-center" style={{ gap: 6 }}>
+        <nav className="hidden sm:flex items-center" style={{ gap: 6, justifySelf: "center" }}>
           {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item.id;
             return (
