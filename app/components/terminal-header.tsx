@@ -55,24 +55,33 @@ export default function TerminalHeader() {
       <div
         className="mx-auto"
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
+          display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           padding: "12px 24px",
           maxWidth: 1100,
+          position: "relative",
         }}
       >
-        {/* Brand — left column */}
+        {/* Brand — left */}
         <button
           className="flex items-center gap-1.5 cursor-pointer bg-transparent border-none"
           onClick={() => scrollTo("lobby")}
-          style={{ padding: 0, justifySelf: "start" }}
+          style={{ padding: 0, zIndex: 1 }}
         >
           <span style={{ color: "var(--fg-0)", fontWeight: 600, fontSize: 14, letterSpacing: "0.02em" }}>renzorico</span>
         </button>
 
-        {/* Desktop nav — center column */}
-        <nav className="hidden sm:flex items-center" style={{ gap: 6, justifySelf: "center" }}>
+        {/* Desktop nav — absolutely centered in the bar */}
+        <nav
+          className="hidden sm:flex items-center"
+          style={{
+            gap: 4,
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
           {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item.id;
             return (
@@ -84,11 +93,12 @@ export default function TerminalHeader() {
                   color: isActive ? "var(--green-primary)" : "var(--fg-2)",
                   fontSize: 12,
                   fontFamily: "var(--font-mono)",
-                  padding: "5px 10px",
+                  padding: "5px 8px",
                   borderRadius: "var(--radius-sm)",
                   background: isActive ? "var(--green-subtle)" : "transparent",
                   transition: "all 150ms",
                   letterSpacing: "0.02em",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {item.label}
@@ -97,8 +107,8 @@ export default function TerminalHeader() {
           })}
         </nav>
 
-        {/* Social links — right column (desktop) / hamburger (mobile) */}
-        <div className="hidden sm:flex items-center" style={{ gap: 6, justifySelf: "end" }}>
+        {/* Social links — right (desktop) */}
+        <div className="hidden sm:flex items-center" style={{ gap: 6, zIndex: 1 }}>
           <a
             href="https://github.com/renzorico"
             target="_blank"
@@ -121,14 +131,13 @@ export default function TerminalHeader() {
           </a>
         </div>
 
-        {/* Mobile hamburger — right column */}
+        {/* Mobile hamburger — right */}
         <button
           className="sm:hidden bg-transparent border-none cursor-pointer"
           style={{
             color: "var(--fg-1)",
             fontSize: 18,
             fontFamily: "var(--font-mono)",
-            justifySelf: "end",
           }}
           onClick={() => setMobileOpen(!mobileOpen)}
         >
