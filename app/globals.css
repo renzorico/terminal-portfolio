@@ -88,12 +88,15 @@
   --space-20: 5rem;
 
   /* Borders & Radii */
-  --radius-sm: 2px;
-  --radius-md: 4px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 
   /* Shadows */
   --shadow-glow-sm: 0 0 4px var(--green-dim);
   --shadow-glow-md: 0 0 8px var(--green-dim), 0 0 16px rgba(0, 214, 50, 0.1);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.2);
 
   /* Transitions */
   --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
@@ -119,6 +122,13 @@ body {
   color: var(--fg-0);
   font-family: var(--font-mono);
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--green-dim);
+  color: var(--green-bright);
 }
 
 a {
@@ -130,6 +140,7 @@ a {
 a:hover {
   color: var(--color-link-hover);
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ============================================================
@@ -146,8 +157,24 @@ a:hover {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes barGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
 /* ============================================================
-   Responsive: hero grid stacks on mobile
+   Form focus states
+   ============================================================ */
+
+input:focus,
+textarea:focus {
+  border-color: var(--green-primary) !important;
+  box-shadow: var(--shadow-glow-sm);
+  outline: none;
+}
+
+/* ============================================================
+   Responsive
    ============================================================ */
 
 @media (max-width: 768px) {
@@ -158,6 +185,58 @@ a:hover {
   .featured-card {
     grid-template-columns: 1fr !important;
   }
+  .compact-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .pipeline-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .skills-bar-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .pipeline-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   Subtle grid background — adds depth
+   ============================================================ */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Animated gradient glow for key elements
+   ============================================================ */
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
 
 /* ============================================================

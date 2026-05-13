@@ -5,7 +5,7 @@ import { Approach, Exhibits, Skills, About, Contact } from "./components/section
 const sectionStyle: React.CSSProperties = {
   maxWidth: 1100,
   margin: "0 auto",
-  padding: "64px 20px",
+  padding: "72px 24px",
 };
 
 const dividerStyle: React.CSSProperties = {
@@ -21,17 +21,17 @@ export default function Home() {
         <section id="lobby" style={sectionStyle}>
           <Hero />
         </section>
-        <section id="approach" style={{ ...sectionStyle, ...dividerStyle }}>
-          <Approach />
+        <section id="about" style={{ ...sectionStyle, ...dividerStyle }}>
+          <About />
         </section>
         <section id="exhibits" style={{ ...sectionStyle, ...dividerStyle }}>
           <Exhibits />
         </section>
+        <section id="approach" style={{ ...sectionStyle, ...dividerStyle }}>
+          <Approach />
+        </section>
         <section id="skills" style={{ ...sectionStyle, ...dividerStyle }}>
           <Skills />
-        </section>
-        <section id="about" style={{ ...sectionStyle, ...dividerStyle }}>
-          <About />
         </section>
         <section id="contact" style={{ ...sectionStyle, ...dividerStyle }}>
           <Contact />
@@ -40,28 +40,28 @@ export default function Home() {
       <footer
         style={{
           textAlign: "center",
-          padding: "32px 20px",
+          padding: "40px 24px",
           fontSize: 11,
           color: "var(--fg-2)",
-          borderTop: "1px solid var(--fg-3)",
+          borderTop: "1px solid var(--bg-3)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 10,
+          gap: 12,
         }}
       >
-        <div style={{ display: "flex", gap: 16, fontSize: 12 }}>
-          <a href="https://github.com/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-1)" }}>
+        <div style={{ display: "flex", gap: 20, fontSize: 12 }}>
+          <a href="https://github.com/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-1)", textDecoration: "none" }}>
             github
           </a>
-          <a href="https://linkedin.com/in/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-1)" }}>
+          <a href="https://linkedin.com/in/renzorico" target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-1)", textDecoration: "none" }}>
             linkedin
           </a>
-          <a href="mailto:renzorico10@gmail.com" style={{ color: "var(--fg-1)" }}>
+          <a href="mailto:renzorico10@gmail.com" style={{ color: "var(--fg-1)", textDecoration: "none" }}>
             email
           </a>
         </div>
-        <div>renzo.rico · 2025</div>
+        <div style={{ color: "var(--fg-3)" }}>renzorico · 2026</div>
       </footer>
     </>
   );
