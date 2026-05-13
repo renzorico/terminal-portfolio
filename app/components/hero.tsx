@@ -153,9 +153,9 @@ function PipelineTerminal() {
    ---------------------------------------------------------------- */
 
 const PROOF_STATS = [
-  { value: "5", label: "deployed products" },
-  { value: "50yr", label: "of UN speech data analyzed" },
-  { value: "scraping → ETL → ML → deploy", label: "" },
+  { value: "4", label: "live deployed tools — not notebooks" },
+  { value: "sole builder", label: "on every project: data contracts to production UI" },
+  { value: "scraping → ETL → ML → agentic AI → deployed product", label: "" },
 ];
 
 export default function Hero() {
@@ -217,8 +217,9 @@ export default function Hero() {
               fontFamily: "var(--font-display)",
             }}
           >
-            End-to-end: data collection, ML models, agentic AI, deployed applications.
-            Not notebooks that sit — systems that work.
+            I take messy, unstructured problems and turn them into working systems —
+            LLM pipelines, NLP corpora, interactive data tools. End-to-end:
+            raw source to deployed product, no handoffs.
           </p>
 
           {/* Proof stats */}
@@ -266,7 +267,7 @@ export default function Hero() {
               see the work →
             </button>
             <button
-              onClick={() => scrollTo("about")}
+              onClick={() => scrollTo("brief")}
               style={{
                 fontFamily: "var(--font-mono)",
                 fontSize: 12,
