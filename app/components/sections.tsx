@@ -1450,7 +1450,7 @@ export function About() {
             }}
           >
             <p style={{ marginBottom: 16 }}>
-              Both fields reward the same instincts: think in systems, care about the parts nobody sees, and know when something is not finished yet.
+              Trained as an architect. Ended up building with data. Both fields reward the same instincts: think in systems, care about the parts nobody sees, and know when something is not finished yet.
             </p>
             <p style={{ marginBottom: 16 }}>
               The work I tend to end up doing starts at the messy end. There is a source nobody has cleaned, a format nobody has parsed, a system that does not connect to anything useful yet. I work through that part, and then the part after it. The full chain, from whatever the raw input is to something deployed.
