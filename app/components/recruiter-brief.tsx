@@ -1,24 +1,41 @@
 "use client";
 
-const FACTS = [
-  { key: "role target", value: "Data Scientist · product-facing" },
-  { key: "location", value: "Barcelona · remote or relocation in Europe" },
-  { key: "available", value: "now", highlight: true },
-  { key: "core stack", value: "Python · SQL · LLMs · NLP · TypeScript" },
-  { key: "owns", value: "data collection → ML → deployment · no handoffs" },
-];
-
-const PROOFS = [
-  { text: "Agentic pipeline that scrapes job boards, ranks listings against a candidate profile, and exports daily matches", tag: "ds-radar" },
-  { text: "Voter-alignment quiz for the Colombian 2026 election, live and sourced", tag: "no-botes-tu-voto" },
-  { text: "Interactive atlas across 600+ London neighborhoods", tag: "the-london-bible" },
-];
-
 const LINKS = [
   { label: "github", href: "https://github.com/renzorico", color: "var(--fg-1)" },
   { label: "linkedin / cv", href: "https://linkedin.com/in/renzorico", color: "var(--cyan-primary)" },
   { label: "email", href: "mailto:renzorico10@gmail.com", color: "var(--amber-primary)" },
 ];
+
+const PROOFS = [
+  {
+    tag: "ds-radar",
+    text: "Agentic pipeline that scrapes job boards, ranks listings against a candidate profile, and exports daily matches",
+  },
+  {
+    tag: "no-botes-tu-voto",
+    text: "Voter-alignment quiz for the Colombian 2026 election — live, sourced, and transparent",
+  },
+  {
+    tag: "the-london-bible",
+    text: "Interactive geospatial atlas across 600+ London neighborhoods",
+  },
+];
+
+const label = (text: string) => (
+  <span
+    style={{
+      fontSize: 10,
+      color: "var(--fg-2)",
+      textTransform: "uppercase" as const,
+      letterSpacing: "0.1em",
+      fontFamily: "var(--font-mono)",
+      display: "block",
+      marginBottom: 4,
+    }}
+  >
+    {text}
+  </span>
+);
 
 export default function RecruiterBrief() {
   return (
@@ -67,99 +84,66 @@ export default function RecruiterBrief() {
         </div>
       </div>
 
-      {/* Two-column body */}
+      {/* Row 1: three top facts */}
       <div
-        style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}
-        className="hero-grid"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 120px",
+          gap: 0,
+          borderBottom: "1px solid var(--bg-3)",
+        }}
       >
-        {/* Left: factsheet */}
-        <div
-          style={{
-            padding: "24px 28px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-            borderRight: "1px solid var(--bg-3)",
-          }}
-        >
-          {FACTS.map(({ key, value, highlight }) => (
-            <div
-              key={key}
-              style={{ display: "grid", gridTemplateColumns: "88px 1fr", gap: 12, alignItems: "baseline" }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  color: "var(--fg-2)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  paddingTop: 1,
-                }}
-              >
-                {key}
-              </span>
-              <span style={{ fontSize: 12, color: highlight ? "var(--green-primary)" : "var(--fg-0)", lineHeight: 1.5 }}>
-                {value}
-              </span>
-            </div>
-          ))}
+        <div style={{ padding: "18px 24px", borderRight: "1px solid var(--bg-3)" }}>
+          {label("role target")}
+          <span style={{ fontSize: 13, color: "var(--fg-0)" }}>Data Scientist · product-facing</span>
         </div>
-
-        {/* Right: proof points */}
-        <div style={{ padding: "24px 28px", display: "flex", flexDirection: "column", gap: 12 }}>
-          <div
-            style={{
-              fontSize: 10,
-              color: "var(--fg-2)",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              marginBottom: 4,
-            }}
-          >
-            three proofs
-          </div>
-
-          {PROOFS.map(({ text, tag }) => (
-            <div key={tag} style={{ display: "grid", gridTemplateColumns: "14px 1fr", gap: 10, alignItems: "start" }}>
-              <span style={{ color: "var(--green-primary)", fontSize: 12, lineHeight: 1.6 }}>→</span>
-              <div>
-                <span style={{ fontSize: 12, color: "var(--fg-1)", lineHeight: 1.6 }}>{text} </span>
-                <span
-                  style={{
-                    fontSize: 10,
-                    color: "var(--fg-3)",
-                    letterSpacing: "0.04em",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  [{tag}]
-                </span>
-              </div>
-            </div>
-          ))}
-
-          <div
-            style={{
-              marginTop: 8,
-              paddingTop: 14,
-              borderTop: "1px solid var(--bg-3)",
-              display: "flex",
-              gap: 18,
-            }}
-          >
-            {LINKS.map(({ label, href, color }) => (
-              <a
-                key={label}
-                href={href}
-                target={href.startsWith("mailto") ? undefined : "_blank"}
-                rel={href.startsWith("mailto") ? undefined : "noopener noreferrer"}
-                style={{ fontSize: 11, color, textDecoration: "none", letterSpacing: "0.02em" }}
-              >
-                {label} ↗
-              </a>
-            ))}
-          </div>
+        <div style={{ padding: "18px 24px", borderRight: "1px solid var(--bg-3)" }}>
+          {label("location")}
+          <span style={{ fontSize: 13, color: "var(--fg-0)" }}>Barcelona · remote or relocation in Europe</span>
         </div>
+        <div style={{ padding: "18px 24px" }}>
+          {label("available")}
+          <span style={{ fontSize: 13, color: "var(--green-primary)", fontWeight: 600 }}>Now</span>
+        </div>
+      </div>
+
+      {/* Row 2: stack */}
+      <div style={{ padding: "18px 24px", borderBottom: "1px solid var(--bg-3)" }}>
+        {label("core stack")}
+        <span style={{ fontSize: 13, color: "var(--fg-0)" }}>
+          Python · SQL · LLMs · NLP · TypeScript · end-to-end, no handoffs
+        </span>
+      </div>
+
+      {/* Row 3: proofs */}
+      <div style={{ padding: "18px 24px", borderBottom: "1px solid var(--bg-3)", display: "flex", flexDirection: "column", gap: 10 }}>
+        {label("three proofs")}
+        {PROOFS.map(({ tag, text }) => (
+          <div key={tag} style={{ display: "grid", gridTemplateColumns: "12px 1fr", gap: 10, alignItems: "baseline" }}>
+            <span style={{ color: "var(--green-primary)" }}>→</span>
+            <span style={{ fontSize: 13, color: "var(--fg-1)", lineHeight: 1.6 }}>
+              {text}
+              <span style={{ marginLeft: 8, fontSize: 10, color: "var(--fg-3)", letterSpacing: "0.04em" }}>
+                [{tag}]
+              </span>
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer: links */}
+      <div style={{ padding: "14px 24px", background: "var(--bg-2)", display: "flex", gap: 20 }}>
+        {LINKS.map(({ label: text, href, color }) => (
+          <a
+            key={text}
+            href={href}
+            target={href.startsWith("mailto") ? undefined : "_blank"}
+            rel={href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+            style={{ fontSize: 12, color, textDecoration: "none", letterSpacing: "0.02em" }}
+          >
+            {text} ↗
+          </a>
+        ))}
       </div>
     </div>
   );
