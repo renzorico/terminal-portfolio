@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 const NAV_ITEMS = [
   { id: "lobby", label: "home" },
+  { id: "brief", label: "brief" },
   { id: "about", label: "about" },
-  { id: "skills", label: "skills" },
   { id: "exhibits", label: "exhibits" },
   { id: "contact", label: "contact" },
 ] as const;
@@ -120,13 +120,29 @@ export default function TerminalHeader() {
         <div
           className="hidden sm:flex"
           style={{
-            width: 160,
+            width: 220,
             flexShrink: 0,
             justifyContent: "flex-end",
             alignItems: "center",
             gap: 6,
           }}
         >
+          {/* Availability badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: 5, marginRight: 8 }}>
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "var(--green-primary)",
+                flexShrink: 0,
+                animation: "pulse 2.5s ease-in-out infinite",
+              }}
+            />
+            <span style={{ fontSize: 10, color: "var(--green-primary)", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
+              open to roles
+            </span>
+          </div>
           <a
             href="https://github.com/renzorico"
             target="_blank"
@@ -145,7 +161,7 @@ export default function TerminalHeader() {
             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--fg-0)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--fg-2)")}
           >
-            in
+            cv
           </a>
         </div>
 
