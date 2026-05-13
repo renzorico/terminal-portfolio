@@ -22,12 +22,17 @@ interface Exhibit {
   accentSubtle: string;
   url?: string;
   repo: string;
+  flagship?: boolean;
+  role?: string;
 }
 
 const EXHIBITS: Exhibit[] = [
+  /* ── Flagships (shown on homepage) ─────────────────────────── */
   {
     id: "EX-01",
     title: "ds-radar",
+    flagship: true,
+    role: "Sole builder — agent architecture, LLM scoring, pipeline CLI",
     problem:
       "Job searching for data roles is repetitive and noisy. Good opportunities are scattered across sources, and evaluating each listing manually does not scale.",
     input:
@@ -38,7 +43,7 @@ const EXHIBITS: Exhibit[] = [
       "Keeping the pipeline reliable as it evolved. I tightened the system around a single source of truth — tracker.tsv, scan-history.tsv, and eval artifacts — so repairs, history, and downstream tooling all point to the same canonical state.",
     result:
       "A reproducible workflow for ingesting job feeds, scoring relevance, tracking decisions, and generating linked evaluation artifacts for DS and analytics job searches.",
-    tags: ["python", "llms", "automation", "data-pipelines"],
+    tags: ["python", "llms", "ai-agents", "data-pipelines"],
     accent: "var(--cyan-primary)",
     accentDim: "var(--cyan-dim)",
     accentSubtle: "var(--cyan-subtle)",
@@ -47,6 +52,8 @@ const EXHIBITS: Exhibit[] = [
   {
     id: "EX-02",
     title: "no-botes-tu-voto",
+    flagship: true,
+    role: "Sole builder — data curation, LLM classification, Next.js frontend",
     problem:
       "Presidential campaigns produce long, ambiguous political messaging, but voters need a clearer way to compare candidates on concrete issues.",
     input:
@@ -57,7 +64,7 @@ const EXHIBITS: Exhibit[] = [
       "Political positions are often vague or incomplete. The product had to stay useful without pretending every candidate had a clean, fully structured stance on every issue.",
     result:
       "A live public quiz experience for Colombia 2026 that helps users compare six candidates across seven key topics using documented sources and a transparent methodology.",
-    tags: ["civic-tech", "next.js", "typescript", "data-curation"],
+    tags: ["llms", "next.js", "typescript", "prompt-engineering"],
     accent: "var(--green-primary)",
     accentDim: "var(--green-dim)",
     accentSubtle: "var(--green-subtle)",
@@ -66,27 +73,9 @@ const EXHIBITS: Exhibit[] = [
   },
   {
     id: "EX-03",
-    title: "un-speeches",
-    problem:
-      "UN General Assembly speeches contain decades of geopolitical signal, but they are difficult to explore systematically without a purpose-built analysis workflow.",
-    input:
-      "8,000+ UN General Debate speeches · multi-decade text corpus · country and year metadata",
-    approach:
-      "Built an NLP exploration project around the UN speech corpus, combining text preprocessing, thematic analysis, and an interactive app layer to make long-run diplomatic language easier to inspect.",
-    challenge:
-      "Diplomatic language is repetitive, formal, and full of domain-specific phrasing, so generic off-the-shelf text analysis produces shallow results unless the preprocessing and framing are adapted to the corpus.",
-    result:
-      "An interactive UN speeches analysis project that turns a large diplomatic text archive into something searchable, inspectable, and analytically usable.",
-    tags: ["python", "nlp", "topic-modeling", "streamlit"],
-    accent: "var(--amber-primary)",
-    accentDim: "var(--amber-dim)",
-    accentSubtle: "var(--amber-subtle)",
-    url: "https://speeches-at-un.streamlit.app/",
-    repo: "https://github.com/renzorico/un-speeches",
-  },
-  {
-    id: "EX-04",
     title: "the-london-bible",
+    flagship: true,
+    role: "Sole builder — data pipeline, geospatial normalization, map UI",
     problem:
       "London is experienced as layers — transport, density, amenities, schools, hospitals, housing, and geography — but those layers are rarely explored together in one place.",
     input:
@@ -97,16 +86,41 @@ const EXHIBITS: Exhibit[] = [
       "The hard part was not just gathering datasets, but turning them into a coherent and legible map product with consistent overlays and a browsing experience that invites comparison rather than overwhelming the user.",
     result:
       "A deployed interactive London atlas that lets users explore density, transport, amenities, and civic infrastructure through one layered map interface.",
-    tags: ["html", "python", "geojson", "mapping"],
-    accent: "var(--green-primary)",
-    accentDim: "var(--green-dim)",
-    accentSubtle: "var(--green-subtle)",
+    tags: ["python", "maplibre", "geojson", "next.js"],
+    accent: "var(--amber-primary)",
+    accentDim: "var(--amber-dim)",
+    accentSubtle: "var(--amber-subtle)",
     url: "https://the-london-bible.netlify.app/",
     repo: "https://github.com/renzorico/the-london-bible",
+  },
+  /* ── Lab (secondary, compact section) ──────────────────────── */
+  {
+    id: "EX-04",
+    title: "un-speeches",
+    flagship: false,
+    role: "Sole builder — corpus pipeline, NLP, Streamlit dashboard",
+    problem:
+      "UN General Assembly speeches contain decades of geopolitical signal, but they are difficult to explore systematically without a purpose-built analysis workflow.",
+    input:
+      "8,000+ UN General Debate speeches · multi-decade text corpus · country and year metadata",
+    approach:
+      "Built an NLP exploration project around the UN speech corpus, combining text preprocessing, thematic analysis, and an interactive app layer to make long-run diplomatic language easier to inspect.",
+    challenge:
+      "Diplomatic language is repetitive, formal, and full of domain-specific phrasing, so generic off-the-shelf text analysis produces shallow results unless the preprocessing and framing are adapted to the corpus.",
+    result:
+      "An interactive UN speeches analysis project that turns a large diplomatic text archive into something searchable, inspectable, and analytically usable.",
+    tags: ["python", "nlp", "tensorflow", "streamlit"],
+    accent: "var(--purple-primary)",
+    accentDim: "var(--purple-dim)",
+    accentSubtle: "var(--purple-subtle)",
+    url: "https://speeches-at-un.streamlit.app/",
+    repo: "https://github.com/renzorico/un-speeches",
   },
   {
     id: "EX-05",
     title: "legalize-co",
+    flagship: false,
+    role: "Sole builder — ETL pipeline, schema design, open-source corpus",
     problem:
       "Colombian legislation is hard to query, version, and build on as data, even though the legal corpus is public and structurally important for civic tooling.",
     input:
@@ -117,7 +131,7 @@ const EXHIBITS: Exhibit[] = [
       "Source-system constraints made corpus discovery and retrieval messy: the SOAP search endpoint returns invalid XML, and the source TLS chain is broken locally, so the pipeline had to work around unreliable infrastructure.",
     result:
       "A growing open-source corpus of Colombian legislation in Markdown, versioned in git, with 71,500 laws committed in the current repository state.",
-    tags: ["python", "etl", "civic-tech", "open-data"],
+    tags: ["python", "data-pipelines", "web-scraping", "gcp"],
     accent: "var(--cyan-primary)",
     accentDim: "var(--cyan-dim)",
     accentSubtle: "var(--cyan-subtle)",
@@ -126,6 +140,8 @@ const EXHIBITS: Exhibit[] = [
   {
     id: "EX-06",
     title: "bjj-universe",
+    flagship: false,
+    role: "Sole builder — data processing, graph architecture, deployment",
     problem:
       "Brazilian Jiu-Jitsu competition data contains rich relationship structure — athletes, matches, eras, and rivalries — but it is rarely presented as a network people can explore.",
     input:
@@ -136,7 +152,7 @@ const EXHIBITS: Exhibit[] = [
       "The product needed a clean foundation before chasing visual spectacle, so the work focused on strict typing, reproducible data processing, graph-ready structures, and a UI that could grow into a serious analytics tool.",
     result:
       "A deployed interactive BJJ graph experience backed by processed ADCC data, with a production-grade frontend foundation and a clear path toward deeper competition analytics.",
-    tags: ["react", "typescript", "sigma.js", "graph-data"],
+    tags: ["typescript", "javascript", "d3.js", "rest-apis"],
     accent: "var(--purple-primary)",
     accentDim: "var(--purple-dim)",
     accentSubtle: "var(--purple-subtle)",
@@ -855,7 +871,8 @@ function NetworkChart() {
   return <canvas ref={canvasRef} style={{ width: "100%", height: 120, borderRadius: "var(--radius-sm)" }} />;
 }
 
-const EXHIBIT_CHARTS = [RadarChart, VoteChart, SpeechesChart, MapChart, PipelineChart, NetworkChart];
+// Order matches EXHIBITS: ds-radar, no-botes-tu-voto, the-london-bible, un-speeches, legalize-co, bjj-universe
+const EXHIBIT_CHARTS = [RadarChart, VoteChart, MapChart, SpeechesChart, PipelineChart, NetworkChart];
 
 /* ----------------------------------------------------------------
    Exhibit Block — case-study format
@@ -935,7 +952,7 @@ function ExhibitBlock({
           borderBottom: "1px solid var(--bg-3)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <span
             style={{
               fontFamily: "var(--font-mono)",
@@ -943,23 +960,41 @@ function ExhibitBlock({
               color: exhibit.accent,
               fontWeight: 700,
               letterSpacing: "0.08em",
+              flexShrink: 0,
             }}
           >
             {exhibit.id}
           </span>
-          <span style={{ color: "var(--bg-4)", fontSize: 14 }}>─</span>
+          <span style={{ color: "var(--bg-4)", fontSize: 14, flexShrink: 0 }}>─</span>
           <span
             style={{
               fontFamily: "var(--font-display)",
               fontSize: 16,
               fontWeight: 600,
               color: "var(--fg-0)",
+              flexShrink: 0,
             }}
           >
             {exhibit.title}
           </span>
+          {exhibit.role && (
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                color: "var(--fg-3)",
+                letterSpacing: "0.04em",
+                paddingLeft: 4,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              · {exhibit.role}
+            </span>
+          )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 12, fontFamily: "var(--font-mono)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 12, fontFamily: "var(--font-mono)", flexShrink: 0 }}>
           {exhibit.url && (
             <a
               href={exhibit.url}
@@ -1093,10 +1128,12 @@ function ExhibitBlock({
 }
 
 /* ----------------------------------------------------------------
-   Exhibits — six case studies
+   Exhibits — three flagship case studies
    ---------------------------------------------------------------- */
 
 export function Exhibits() {
+  const flagships = EXHIBITS.filter((e) => e.flagship);
+
   return (
     <div>
       <AnimateIn>
@@ -1105,12 +1142,91 @@ export function Exhibits() {
       </AnimateIn>
 
       <div className="flex flex-col" style={{ gap: 20 }}>
-        {EXHIBITS.map((exhibit, i) => (
+        {flagships.map((exhibit, i) => (
           <AnimateIn key={exhibit.id} delay={i * 120}>
             <ExhibitBlock exhibit={exhibit} chart={EXHIBIT_CHARTS[i]} />
           </AnimateIn>
         ))}
       </div>
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------
+   Lab — secondary projects, compact list
+   ---------------------------------------------------------------- */
+
+function LabRow({ exhibit }: { exhibit: Exhibit }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "80px 180px 1fr auto",
+        gap: 20,
+        alignItems: "baseline",
+        padding: "14px 0",
+        borderBottom: "1px solid var(--bg-2)",
+        transition: "all 150ms",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: 10,
+          color: exhibit.accent,
+          letterSpacing: "0.08em",
+        }}
+      >
+        {exhibit.id}
+      </span>
+      <span
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: 13,
+          fontWeight: 500,
+          color: hovered ? "var(--fg-0)" : "var(--fg-1)",
+          transition: "color 150ms",
+        }}
+      >
+        {exhibit.title}
+      </span>
+      <span style={{ fontSize: 12, color: "var(--fg-2)", lineHeight: 1.5 }}>
+        {exhibit.result}
+      </span>
+      <div style={{ display: "flex", gap: 10, fontSize: 11, fontFamily: "var(--font-mono)", flexShrink: 0 }}>
+        {exhibit.url && (
+          <a href={exhibit.url} target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-2)", textDecoration: "none" }}>
+            live ↗
+          </a>
+        )}
+        <a href={exhibit.repo} target="_blank" rel="noopener noreferrer" style={{ color: "var(--fg-3)", textDecoration: "none" }}>
+          source ↗
+        </a>
+      </div>
+    </div>
+  );
+}
+
+export function Lab() {
+  const labProjects = EXHIBITS.filter((e) => !e.flagship);
+
+  return (
+    <div>
+      <AnimateIn>
+        <div style={sectionLabelStyle}>$ ls lab/</div>
+        <div style={sectionTitleStyle}>Lab & experiments</div>
+      </AnimateIn>
+
+      <AnimateIn delay={80}>
+        <div style={{ borderTop: "1px solid var(--bg-2)" }}>
+          {labProjects.map((exhibit) => (
+            <LabRow key={exhibit.id} exhibit={exhibit} />
+          ))}
+        </div>
+      </AnimateIn>
     </div>
   );
 }
