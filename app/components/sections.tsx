@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, type FormEvent } from "react";
+import { useState, useEffect, useRef } from "react";
 import AnimateIn from "./animate-in";
 import SkillsTable from "./skills-table";
 
@@ -230,25 +230,6 @@ const sectionTitleStyle: React.CSSProperties = {
   lineHeight: 1.2,
 };
 
-const inputStyle: React.CSSProperties = {
-  fontFamily: "var(--font-mono)",
-  fontSize: 13,
-  padding: "10px 14px",
-  background: "var(--bg-2)",
-  border: "1px solid var(--bg-4)",
-  borderRadius: "var(--radius-sm)",
-  color: "var(--fg-0)",
-  outline: "none",
-  transition: "border-color 150ms, box-shadow 150ms",
-};
-
-const labelStyle: React.CSSProperties = {
-  fontSize: 10,
-  color: "var(--fg-2)",
-  textTransform: "uppercase",
-  letterSpacing: "0.1em",
-  marginBottom: 2,
-};
 
 /* ----------------------------------------------------------------
    Animated Charts — continuously moving
@@ -1513,37 +1494,6 @@ const CONTACT_LINKS = [
 ];
 
 export function Contact() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("sending");
-
-    const formId = process.env.NEXT_PUBLIC_FORMSPREE_ID;
-    if (!formId) {
-      setStatus("error");
-      return;
-    }
-
-    const data = new FormData(e.currentTarget);
-
-    try {
-      const res = await fetch(`https://formspree.io/f/${formId}`, {
-        method: "POST",
-        body: data,
-        headers: { Accept: "application/json" },
-      });
-
-      if (res.ok) {
-        setStatus("sent");
-      } else {
-        setStatus("error");
-      }
-    } catch {
-      setStatus("error");
-    }
-  };
-
   return (
     <div>
       <AnimateIn>
@@ -1551,149 +1501,48 @@ export function Contact() {
         <div style={sectionTitleStyle}>Get in touch</div>
       </AnimateIn>
 
-      <div
-        className="hero-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 24,
-          alignItems: "stretch",
-        }}
-      >
-        <AnimateIn delay={100}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, height: "100%" }}>
-            {CONTACT_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target={link.label !== "email" ? "_blank" : undefined}
-                rel={link.label !== "email" ? "noopener noreferrer" : undefined}
-                style={{
-                  background: "var(--bg-1)",
-                  border: "1px solid var(--bg-3)",
-                  borderRadius: "var(--radius-md)",
-                  padding: "18px 22px",
-                  textDecoration: "none",
-                  color: "inherit",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  gap: 4,
-                  flex: 1,
-                  transition: "all 200ms",
-                  boxShadow: "var(--shadow-card)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "var(--fg-3)";
-                  e.currentTarget.style.transform = "translateY(-1px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "var(--bg-3)";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                <span style={{ fontSize: 10, color: "var(--fg-2)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                  {link.label}
-                </span>
-                <span style={{ fontSize: 14, color: link.color, fontFamily: "var(--font-mono)" }}>
-                  {link.value}
-                </span>
-                <span style={{ fontSize: 11, color: "var(--fg-2)" }}>{link.description}</span>
-              </a>
-            ))}
-          </div>
-        </AnimateIn>
-
-        <AnimateIn delay={200}>
-          <div
-            style={{
-              background: "var(--bg-1)",
-              border: "1px solid var(--bg-3)",
-              borderRadius: "var(--radius-md)",
-              padding: "24px",
-              boxShadow: "var(--shadow-card)",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ fontSize: 11, color: "var(--fg-2)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>
-              send a message
-            </div>
-            {status === "sent" ? (
-              <div
-                style={{
-                  color: "var(--green-primary)",
-                  fontSize: 14,
-                  background: "var(--green-subtle)",
-                  border: "1px solid var(--green-dim)",
-                  borderRadius: "var(--radius-sm)",
-                  padding: "16px 20px",
-                }}
-              >
-                <span style={{ marginRight: 8 }}>●</span> message sent. renzo will respond shortly.
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <label style={labelStyle}>from</label>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="you@company.com"
-                    style={inputStyle}
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label style={labelStyle}>subject</label>
-                  <input
-                    name="_subject"
-                    type="text"
-                    required
-                    placeholder="re: collaboration"
-                    style={inputStyle}
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label style={labelStyle}>message</label>
-                  <textarea
-                    name="message"
-                    required
-                    placeholder="your message..."
-                    rows={4}
-                    style={{ ...inputStyle, resize: "vertical", minHeight: 80 }}
-                  />
-                </div>
-                {status === "error" && (
-                  <div style={{ color: "var(--red-primary)", fontSize: 12, background: "var(--red-dim)", padding: "8px 12px", borderRadius: "var(--radius-sm)" }}>
-                    error: message failed. try emailing directly.
-                  </div>
-                )}
-                <button
-                  type="submit"
-                  disabled={status === "sending"}
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 13,
-                    padding: "10px 24px",
-                    background: status === "sending" ? "var(--green-dim)" : "var(--green-primary)",
-                    color: "#0a0a0a",
-                    border: "none",
-                    borderRadius: "var(--radius-sm)",
-                    fontWeight: 600,
-                    cursor: status === "sending" ? "wait" : "pointer",
-                    alignSelf: "flex-start",
-                    transition: "all 150ms",
-                  }}
-                >
-                  {status === "sending" ? "sending..." : "send --message"}
-                </button>
-              </form>
-            )}
-          </div>
-        </AnimateIn>
-      </div>
+      <AnimateIn delay={100}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {CONTACT_LINKS.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target={link.label !== "email" ? "_blank" : undefined}
+              rel={link.label !== "email" ? "noopener noreferrer" : undefined}
+              style={{
+                background: "var(--bg-1)",
+                border: "1px solid var(--bg-3)",
+                borderRadius: "var(--radius-md)",
+                padding: "18px 22px",
+                textDecoration: "none",
+                color: "inherit",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: 4,
+                transition: "all 200ms",
+                boxShadow: "var(--shadow-card)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--fg-3)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--bg-3)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <span style={{ fontSize: 10, color: "var(--fg-2)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                {link.label}
+              </span>
+              <span style={{ fontSize: 14, color: link.color, fontFamily: "var(--font-mono)" }}>
+                {link.value}
+              </span>
+              <span style={{ fontSize: 11, color: "var(--fg-2)" }}>{link.description}</span>
+            </a>
+          ))}
+        </div>
+      </AnimateIn>
     </div>
   );
 }
