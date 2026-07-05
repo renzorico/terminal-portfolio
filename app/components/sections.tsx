@@ -143,15 +143,15 @@ const EXHIBITS: Exhibit[] = [
     flagship: false,
     role: "Sole builder — feature engineering, ML pipeline, Monte Carlo simulation, Streamlit dashboard",
     problem:
-      "Predicting tennis match outcomes requires combining player form, surface affinity, head-to-head history, and momentum — data that is scattered and rarely modeled together.",
+      "Predicting tennis match outcomes requires combining player form, surface affinity, head-to-head history, and momentum — and the only honest test is tracking predictions live, match by match, as a real tournament plays out.",
     input:
       "74,848 ATP matches (2000-2026) · surface-weighted Elo ratings · rolling serve/return stats · head-to-head records · momentum indicators",
     approach:
-      "Built a full prediction pipeline: 41 delta features engineered from historical ATP data, trained with XGBoost using TimeSeriesSplit to prevent temporal leakage, and wrapped in a Streamlit dashboard with Monte Carlo bracket simulation.",
+      "Built a full prediction pipeline updated daily during Wimbledon 2026: 41 delta features from historical ATP data, XGBoost trained with TimeSeriesSplit, and a daily snapshot system that locks in pre-match predictions and scores them once results are known.",
     challenge:
-      "Avoiding data leakage was the central constraint. Every rolling feature had to be strictly pre-match, training splits had to respect time ordering, and row flipping was needed to teach the model symmetric player comparisons.",
+      "Closing the loop between prediction and outcome. Every prediction is committed before the match starts, stored as a dated snapshot, and scored afterwards — so the live accuracy figure is real and auditable, not cherry-picked.",
     result:
-      "An XGBoost model with strong cross-validated metrics on historical data, but 56% live accuracy on 2026 Wimbledon matches — a useful gap between held-out performance and real tournament conditions. Includes a 5-page Streamlit dashboard for player profiles, bracket simulation, and daily tracking.",
+      "A live-scoring prediction system tracking 56% accuracy on 2026 Wimbledon matches, with a Streamlit dashboard for player profiles, bracket simulation, and a running record of every prediction made during the tournament.",
     tags: ["python", "scikit-learn", "xgboost", "streamlit"],
     accent: "var(--green-primary)",
     accentDim: "var(--green-dim)",
