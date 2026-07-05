@@ -139,6 +139,28 @@ const EXHIBITS: Exhibit[] = [
   },
   {
     id: "EX-06",
+    title: "wimbledon-predictor",
+    flagship: false,
+    role: "Sole builder — feature engineering, ML pipeline, Monte Carlo simulation, Streamlit dashboard",
+    problem:
+      "Predicting tennis match outcomes requires combining player form, surface affinity, head-to-head history, and momentum — data that is scattered and rarely modeled together.",
+    input:
+      "74,848 ATP matches (2000-2026) · surface-weighted Elo ratings · rolling serve/return stats · head-to-head records · momentum indicators",
+    approach:
+      "Built a full prediction pipeline: 41 delta features engineered from historical ATP data, trained with XGBoost using TimeSeriesSplit to prevent temporal leakage, and wrapped in a Streamlit dashboard with Monte Carlo bracket simulation.",
+    challenge:
+      "Avoiding data leakage was the central constraint. Every rolling feature had to be strictly pre-match, training splits had to respect time ordering, and row flipping was needed to teach the model symmetric player comparisons.",
+    result:
+      "An XGBoost model reaching 80.6% accuracy and 0.896 ROC AUC on held-out data, with a 5-page Streamlit dashboard for player profiles, bracket simulation, and daily tournament tracking.",
+    tags: ["python", "scikit-learn", "xgboost", "streamlit"],
+    accent: "var(--green-primary)",
+    accentDim: "var(--green-dim)",
+    accentSubtle: "var(--green-subtle)",
+    url: "https://wimbledon2026.streamlit.app/",
+    repo: "https://github.com/renzorico/wimbledon-predictor",
+  },
+  {
+    id: "EX-07",
     title: "bjj-universe",
     flagship: false,
     role: "Sole builder — data processing, graph architecture, deployment",
@@ -182,6 +204,9 @@ const TAG_COLORS: Record<string, [string, string, string]> = {
   "data-pipelines": ["var(--cyan-primary)", "var(--cyan-subtle)", "var(--cyan-dim)"],
   "three.js": ["var(--amber-primary)", "var(--amber-subtle)", "var(--amber-dim)"],
   "d3.js": ["var(--amber-primary)", "var(--amber-subtle)", "var(--amber-dim)"],
+  "scikit-learn": ["var(--amber-primary)", "var(--amber-subtle)", "var(--amber-dim)"],
+  xgboost: ["var(--green-primary)", "var(--green-subtle)", "var(--green-dim)"],
+  streamlit: ["var(--purple-primary)", "#1a0d2e", "var(--purple-muted)"],
 };
 
 const DEFAULT_TAG_COLOR: [string, string, string] = ["var(--fg-1)", "var(--bg-3)", "var(--fg-3)"];
