@@ -151,7 +151,7 @@ const EXHIBITS: Exhibit[] = [
     challenge:
       "Avoiding data leakage was the central constraint. Every rolling feature had to be strictly pre-match, training splits had to respect time ordering, and row flipping was needed to teach the model symmetric player comparisons.",
     result:
-      "An XGBoost model reaching 80.6% accuracy and 0.896 ROC AUC on held-out data, with a 5-page Streamlit dashboard for player profiles, bracket simulation, and daily tournament tracking.",
+      "An XGBoost model with strong cross-validated metrics on historical data, but 56% live accuracy on 2026 Wimbledon matches — a useful gap between held-out performance and real tournament conditions. Includes a 5-page Streamlit dashboard for player profiles, bracket simulation, and daily tracking.",
     tags: ["python", "scikit-learn", "xgboost", "streamlit"],
     accent: "var(--green-primary)",
     accentDim: "var(--green-dim)",
