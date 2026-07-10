@@ -151,7 +151,7 @@ const EXHIBITS: Exhibit[] = [
     challenge:
       "Closing the loop between prediction and outcome. Every prediction is committed before the match starts, stored as a dated snapshot, and scored afterwards — so the live accuracy figure is real and auditable, not cherry-picked.",
     result:
-      "A live-scoring prediction system tracking 60% accuracy on 2026 Wimbledon matches, with a Streamlit dashboard for player profiles, bracket simulation, and a running record of every prediction made during the tournament.",
+      "A live-scoring prediction system tracking 55% accuracy across 53 resolved predictions on 2026 Wimbledon matches, with a Streamlit dashboard for player profiles, bracket simulation, and a running record of every prediction made during the tournament.",
     tags: ["python", "scikit-learn", "xgboost", "streamlit"],
     accent: "var(--green-primary)",
     accentDim: "var(--green-dim)",
